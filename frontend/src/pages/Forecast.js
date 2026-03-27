@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { productsApi, forecastApi } from '../api/client';
 import ForecastChart from '../components/ForecastChart';
 import styles from './Forecast.module.css';
@@ -25,12 +26,14 @@ export default function Forecast() {
 
   const forecastMutation = useMutation({
     mutationFn: () => forecastApi.getForecast(productId, horizon),
-    onSuccess: (res) => setForecastData(res.data)
+    onSuccess: (res) => setForecastData(res.data),
+    onError: (e) => toast.error(`Forecast failed: ${e.message}`)
   });
 
   const explainMutation = useMutation({
     mutationFn: () => forecastApi.explain(productId),
-    onSuccess: (res) => setExplanation(res.data)
+    onSuccess: (res) => setExplanation(res.data),
+    onError: () => {} // silent — explain is optional
   });
 
   const handleRun = () => {
