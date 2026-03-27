@@ -1,58 +1,62 @@
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
+.layout { display: flex; min-height: 100vh; }
 
 .sidebar {
-  width: 220px;
+  width: 230px;
   background: var(--surface);
   border-right: 1px solid var(--border);
   padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
+  display: flex; flex-direction: column; gap: 24px;
+  position: fixed; top: 0; left: 0; height: 100vh;
+  overflow-y: auto;
 }
 
 .logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--accent);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 18px; font-weight: 700; color: var(--accent);
 }
-
 .logoIcon { font-size: 22px; }
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.logoBadge {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 6px; border-radius: 6px;
+  background: rgba(99,102,241,0.2); color: var(--accent);
+  margin-left: auto;
 }
+
+.nav { display: flex; flex-direction: column; gap: 2px; }
 
 .link, .activeLink {
-  display: block;
-  padding: 10px 14px;
-  border-radius: 8px;
-  color: var(--muted);
-  font-weight: 500;
-  transition: all 0.15s;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 8px;
+  color: var(--muted); font-weight: 500;
+  transition: all 0.15s; font-size: 14px;
+  text-decoration: none;
 }
-
 .link:hover { background: var(--surface2); color: var(--text); }
-
 .activeLink {
-  background: var(--accent);
-  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #818cf8);
+  color: #fff; box-shadow: 0 4px 12px rgba(99,102,241,0.3);
 }
+
+.navIcon { font-size: 16px; width: 20px; text-align: center; }
+
+.sidebarFooter {
+  margin-top: auto; padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.footerText { font-size: 10px; color: var(--muted); line-height: 1.4; }
 
 .main {
-  margin-left: 220px;
-  flex: 1;
-  padding: 32px;
-  max-width: 1200px;
+  margin-left: 230px; flex: 1;
+  padding: 32px; max-width: 1300px;
+}
+
+@media (max-width: 768px) {
+  .sidebar { width: 60px; padding: 16px 8px; }
+  .logo span:not(.logoIcon) { display: none; }
+  .logoBadge { display: none; }
+  .link, .activeLink { padding: 10px; justify-content: center; }
+  .link span:last-child, .activeLink span:last-child { display: none; }
+  .navIcon { width: auto; }
+  .sidebarFooter { display: none; }
+  .main { margin-left: 60px; padding: 16px; }
 }

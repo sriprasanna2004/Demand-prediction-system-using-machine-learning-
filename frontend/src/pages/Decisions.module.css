@@ -1,0 +1,110 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+.title { font-size: 24px; font-weight: 700; }
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.muted { color: var(--muted); font-size: 13px; }
+.hint { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+
+.topGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.cardTitle {
+  font-size: 14px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.select {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 13px;
+}
+
+.btnPrimary {
+  padding: 9px 18px; background: var(--accent); color: #fff;
+  border: none; border-radius: 8px; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.decisionResult { display: flex; flex-direction: column; gap: 12px; }
+
+.actionBadge {
+  display: inline-block; padding: 6px 16px;
+  border-radius: 20px; border: 1px solid;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.05em;
+  align-self: flex-start;
+}
+.actionLabel { font-size: 13px; color: var(--muted); }
+.reorderQty {
+  padding: 8px 14px; background: var(--surface2);
+  border-radius: 8px; font-size: 13px;
+  border-left: 3px solid var(--accent);
+}
+
+.reasoningList { display: flex; flex-direction: column; gap: 6px; }
+.reasonItem {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; color: var(--muted); line-height: 1.5;
+}
+.reasonDot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); margin-top: 5px; flex-shrink: 0;
+}
+
+.probGrid { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.probItem { display: grid; grid-template-columns: 120px 1fr 36px; align-items: center; gap: 8px; }
+.probLabel { font-size: 11px; color: var(--muted); }
+.probBar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.probFill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.probVal { font-size: 11px; color: var(--muted); text-align: right; }
+
+.scenarioGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.scenarioBtn {
+  padding: 14px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface2);
+  cursor: pointer; text-align: left; transition: all 0.15s;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.scenarioBtn:hover { border-color: var(--accent); }
+.scenarioBtn[data-active="true"] { border-color: var(--accent); background: rgba(99,102,241,0.1); }
+.scenarioLabel { font-size: 13px; font-weight: 600; color: var(--text); }
+.scenarioDesc { font-size: 11px; color: var(--muted); }
+
+.scenarioResult {
+  padding: 14px; background: var(--surface2);
+  border-radius: 10px; border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.scenarioResultHeader {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; font-weight: 600;
+}
+.multiplierBadge {
+  padding: 3px 10px; border-radius: 12px;
+  background: rgba(99,102,241,0.15); color: var(--accent);
+  font-size: 11px; font-weight: 700;
+}
+.scenarioDemand { display: flex; align-items: center; gap: 12px; }
+.demandItem { display: flex; flex-direction: column; gap: 2px; }
+.demandLabel { font-size: 11px; color: var(--muted); }
+.demandArrow { color: var(--muted); font-size: 18px; }
+.demandHighlight { font-size: 18px; font-weight: 700; color: var(--accent); }
+
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { text-align: left; padding: 8px 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.table tr:last-child td { border-bottom: none; }
+
+.actionTag {
+  padding: 3px 10px; border-radius: 12px;
+  border: 1px solid; font-size: 11px; font-weight: 600;
+}
+
+.miniBar { width: 80px; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+
+@media (max-width: 768px) {
+  .topGrid { grid-template-columns: 1fr; }
+  .scenarioGrid { grid-template-columns: 1fr; }
+}

@@ -12,6 +12,8 @@ const salesRoutes = require('./routes/sales');
 const predictRoutes = require('./routes/predict');
 const insightRoutes = require('./routes/insights');
 const externalRoutes = require('./routes/externalData');
+const forecastRoutes = require('./routes/forecast');
+const rlRoutes = require('./routes/rl');
 const { runSimulation } = require('./services/simulationEngine');
 const { emitDashboardUpdate } = require('./services/socketService');
 const { fetchWeather, fetchMarketTrend } = require('./services/externalApiService');
@@ -49,6 +51,8 @@ app.use('/api/sales', salesRoutes);
 app.use('/api/predict', rateLimiter({ max: 60, windowMs: 60000 }), predictRoutes);
 app.use('/api/insights', insightRoutes);
 app.use('/api/external-data', externalRoutes);
+app.use('/api/forecast', forecastRoutes);
+app.use('/api/rl', rlRoutes);
 
 app.get('/health', async (_, res) => {
   const dbState = mongoose.connection.readyState; // 1 = connected

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:4000',
-  timeout: 10000
+  timeout: 15000
 });
 
 api.interceptors.response.use(
@@ -42,6 +42,17 @@ export const externalApi = {
   getLatest: () => api.get('/api/external-data/latest'),
   getWeather: (location) => api.get('/api/external-data/weather', { params: { location } }),
   getMarket: (symbol) => api.get('/api/external-data/market', { params: { symbol } })
+};
+
+export const forecastApi = {
+  getForecast: (productId, horizon) => api.post('/api/forecast', { productId, horizon }),
+  explain: (productId, targetDate, price) => api.post('/api/forecast/explain', { productId, targetDate, price })
+};
+
+export const rlApi = {
+  decide: (productId, predictedDemand) => api.post('/api/rl/decide', { productId, predictedDemand }),
+  batchDecide: () => api.get('/api/rl/batch'),
+  scenario: (productId, scenario) => api.post('/api/rl/scenario', { productId, scenario })
 };
 
 export default api;
