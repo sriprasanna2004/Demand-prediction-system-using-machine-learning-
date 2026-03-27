@@ -1,0 +1,105 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+
+.header { display: flex; justify-content: space-between; align-items: flex-start; }
+
+.title { font-size: 24px; font-weight: 700; }
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: var(--surface2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.statusBadge[data-connected="true"] { color: var(--success); }
+
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.statusBadge[data-connected="true"] .dot {
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.empty { color: var(--muted); font-size: 13px; }
+
+.alertList { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.alertItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border-left: 3px solid var(--danger);
+}
+
+.stockBadge {
+  background: var(--danger);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.externalGrid { display: flex; flex-direction: column; gap: 12px; }
+
+.externalItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.exLabel { color: var(--muted); }
+
+.cacheNote {
+  font-size: 11px;
+  color: var(--warning);
+  margin-top: 4px;
+}

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: demandai-backend
+    runtime: node
+    rootDir: .
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: ML_SERVICE_URL
+        sync: false
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: ALPHA_VANTAGE_API_KEY
+        sync: false
+      - key: PORT
+        value: 4000
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        sync: false

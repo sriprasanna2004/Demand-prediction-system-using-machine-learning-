@@ -1,0 +1,70 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: demandai_mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', 'db.adminCommand("ping")']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ml-service:
+    build: ./ml-service
+    container_name: demandai_ml
+    ports:
+      - '5001:5001'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/demandforecast
+      - PORT=5001
+      - MODEL_PATH=./models/demand_model.joblib
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:4000
+    volumes:
+      - ml_models:/app/models
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5001/health']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: demandai_backend
+    ports:
+      - '4000:4000'
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/demandforecast
+      - ML_SERVICE_URL=http://ml-service:5001
+      - PORT=4000
+      - NODE_ENV=development
+      - ALLOWED_ORIGINS=http://localhost:3000
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY}
+    depends_on:
+      mongo:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - REACT_APP_API_URL=http://localhost:4000
+    container_name: demandai_frontend
+    ports:
+      - '3000:80'
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+  ml_models:
