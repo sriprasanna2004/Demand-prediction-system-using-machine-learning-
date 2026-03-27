@@ -29,7 +29,7 @@ export default function App() {
             <motion.div className={styles.logo}
               initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
               <span className={styles.logoIcon}>⚡</span>
-              <span>DemandAI</span>
+              <span className={styles.logoText}>DemandAI</span>
               <span className={styles.logoBadge}>v2</span>
             </motion.div>
             <nav className={styles.nav}>
@@ -47,7 +47,10 @@ export default function App() {
               ))}
             </nav>
             <div className={styles.sidebarFooter}>
-              <span className={styles.footerText}>Powered by RandomForest + PPO</span>
+              <div className={styles.footerBadge}>
+                <span className={styles.footerDot} />
+                <span className={styles.footerText}>RandomForest + PPO · All systems live</span>
+              </div>
             </div>
           </aside>
           <main className={styles.main}>
