@@ -41,10 +41,11 @@ export default function Datasets() {
       return datasetsApi.upload(fd);
     },
     onSuccess: (res) => {
-      setUploadResult(res.data);
+      const data = res.data || res;
+      setUploadResult(data);
       setMappings({});
       setStep('mapping');
-      toast.success(`Uploaded ${res.data.row_count} rows — now map your columns`);
+      toast.success(`Uploaded ${data.row_count} rows — now map your columns`);
     },
     onError: (e) => toast.error(`Upload failed: ${e.message}`)
   });
@@ -52,9 +53,10 @@ export default function Datasets() {
   const mapMutation = useMutation({
     mutationFn: () => datasetsApi.map({ dataset_id: uploadResult.dataset_id, mappings }),
     onSuccess: (res) => {
+      const data = res.data || res;
       setStep('done');
       qc.invalidateQueries({ queryKey: ['datasets'] });
-      toast.success(`Mapped ${res.data.processed_rows} rows successfully`);
+      toast.success(`Mapped ${data.processed_rows} rows successfully`);
     },
     onError: (e) => toast.error(`Mapping failed: ${e.message}`)
   });
