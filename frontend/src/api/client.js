@@ -55,4 +55,15 @@ export const rlApi = {
   scenario: (productId, scenario) => api.post('/api/rl/scenario', { productId, scenario })
 };
 
+export const datasetsApi = {
+  upload: (formData) => axios.post(
+    `${process.env.REACT_APP_API_URL || 'http://localhost:4000'}/api/datasets/upload`,
+    formData, { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 30000 }
+  ).then(r => r.data),
+  map: (data) => api.post('/api/datasets/map', data),
+  list: () => api.get('/api/datasets'),
+  remove: (id) => api.delete(`/api/datasets/${id}`),
+  train: () => api.post('/api/datasets/train')
+};
+
 export default api;

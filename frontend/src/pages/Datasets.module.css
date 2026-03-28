@@ -1,0 +1,148 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+.title { font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff, rgba(255,255,255,0.6));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.muted { color: var(--muted); font-size: 13px; }
+
+/* Upload zone */
+.uploadZone {
+  border: 2px dashed rgba(99,102,241,0.3);
+  border-radius: 20px; padding: 48px;
+  text-align: center; cursor: pointer;
+  background: rgba(99,102,241,0.03);
+  transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.uploadZone:hover, .uploadZone[data-dragover="true"] {
+  border-color: var(--accent);
+  background: rgba(99,102,241,0.08);
+  transform: scale(1.01);
+}
+.uploadIcon { font-size: 48px; animation: float 3s ease-in-out infinite; }
+.uploadText { font-size: 16px; font-weight: 600; color: var(--text2); }
+.uploadHint { font-size: 12px; color: var(--muted); }
+.uploadSpinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(99,102,241,0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Sample card */
+.sampleCard {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px; padding: 20px;
+}
+.sampleTitle { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+.sampleCode {
+  background: rgba(0,0,0,0.3); border-radius: 10px; padding: 14px;
+  font-size: 12px; color: #a5b4fc; font-family: 'Fira Code', monospace;
+  overflow-x: auto; line-height: 1.6;
+}
+.sampleNote { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+/* Mapping card */
+.mappingCard {
+  background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 28px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.mappingHeader { display: flex; justify-content: space-between; align-items: flex-start; }
+.cardTitle { font-size: 16px; font-weight: 700; }
+.mappingMeta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.progressBadge {
+  padding: 6px 14px; border-radius: 20px;
+  background: rgba(99,102,241,0.15); color: var(--accent);
+  font-size: 12px; font-weight: 700;
+  border: 1px solid rgba(99,102,241,0.3);
+}
+
+/* Preview table */
+.previewScroll { overflow-x: auto; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+.previewTable { width: 100%; border-collapse: collapse; font-size: 12px; }
+.previewTable th { padding: 8px 12px; background: rgba(255,255,255,0.04); color: var(--muted); text-align: left; white-space: nowrap; }
+.previewTable td { padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.04); color: var(--text2); white-space: nowrap; }
+
+/* Mapping grid */
+.mappingGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mappingRow { display: flex; flex-direction: column; gap: 6px; }
+.fieldLabel { font-size: 12px; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.required { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(99,102,241,0.15); color: var(--accent); }
+.mappingSelect {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 13px;
+  transition: border-color 0.15s;
+}
+.mappingSelect:focus { border-color: var(--accent); outline: none; }
+
+.mappingActions { display: flex; gap: 12px; justify-content: flex-end; }
+
+/* Buttons */
+.btnPrimary {
+  padding: 10px 22px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border: none; border-radius: 10px; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+}
+.btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btnSecondary {
+  padding: 10px 18px; background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1); color: var(--text2);
+  border-radius: 10px; font-size: 13px; cursor: pointer; transition: all 0.15s;
+}
+.btnSecondary:hover { border-color: var(--accent); color: var(--accent); }
+.btnTrain {
+  padding: 8px 18px; background: rgba(16,185,129,0.15);
+  border: 1px solid rgba(16,185,129,0.3); color: var(--success);
+  border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.btnTrain:disabled { opacity: 0.5; cursor: not-allowed; }
+.btnDelete {
+  padding: 6px 10px; background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2); color: var(--danger);
+  border-radius: 8px; font-size: 14px; cursor: pointer; transition: all 0.15s;
+}
+.btnDelete:hover { background: rgba(239,68,68,0.2); }
+
+/* Success card */
+.successCard {
+  background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 20px; padding: 40px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.successIcon { font-size: 48px; }
+.successCard h2 { font-size: 20px; font-weight: 700; color: var(--success); }
+.successCard p { color: var(--muted); font-size: 13px; }
+.successActions { display: flex; gap: 12px; margin-top: 8px; }
+
+/* Dataset list */
+.card {
+  background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 24px;
+}
+.listHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.emptyState { text-align: center; padding: 40px; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; }
+.emptyState span { font-size: 32px; }
+
+.datasetList { display: flex; flex-direction: column; gap: 8px; }
+.datasetItem {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 12px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.2s;
+}
+.datasetItem:hover { border-color: rgba(99,102,241,0.2); }
+.dsIcon { font-size: 24px; flex-shrink: 0; }
+.dsInfo { flex: 1; min-width: 0; }
+.dsName { font-size: 14px; font-weight: 600; color: var(--text2); }
+.dsMeta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.dsStatus { font-weight: 600; }
+.dsStatus[data-status="uploaded"] { color: var(--warning); }
+.dsStatus[data-status="mapped"] { color: var(--success); }
+
+@media (max-width: 768px) {
+  .mappingGrid { grid-template-columns: 1fr; }
+  .uploadZone { padding: 32px 20px; }
+}

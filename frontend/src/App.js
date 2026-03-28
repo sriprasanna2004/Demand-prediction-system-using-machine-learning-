@@ -6,6 +6,7 @@ import Predictions from './pages/Predictions';
 import Inventory from './pages/Inventory';
 import Forecast from './pages/Forecast';
 import Decisions from './pages/Decisions';
+import Datasets from './pages/Datasets';
 import { SocketProvider } from './context/SocketContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectionBanner from './components/ConnectionBanner';
@@ -18,6 +19,7 @@ const NAV = [
   { to: '/forecast',   label: 'Forecast',    icon: '📈' },
   { to: '/decisions',  label: 'RL Decisions',icon: '⚡' },
   { to: '/inventory',  label: 'Inventory',   icon: '🏭' },
+  { to: '/datasets',   label: 'Datasets',    icon: '🗂️' },
 ];
 
 export default function App() {
@@ -63,6 +65,7 @@ export default function App() {
                 <Route path="/forecast" element={<Forecast />} />
                 <Route path="/decisions" element={<Decisions />} />
                 <Route path="/inventory" element={<Inventory />} />
+                <Route path="/datasets" element={<Datasets />} />
                 <Route path="*" element={
                   <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--muted)' }}>
                     <div style={{ fontSize: 48 }}>404</div>
