@@ -3,7 +3,8 @@ import { io } from 'socket.io-client';
 
 const SocketContext = createContext(null);
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+// Socket.io needs the actual backend URL (can't use relative)
+const SOCKET_URL = process.env.REACT_APP_API_URL || 'https://divine-surprise-production-1666.up.railway.app';
 
 export function SocketProvider({ children }) {
   const socketRef = useRef(null);
@@ -12,7 +13,11 @@ export function SocketProvider({ children }) {
   const [dashboardUpdate, setDashboardUpdate] = useState(null);
 
   useEffect(() => {
-    socketRef.current = io(API_URL, { transports: ['websocket'] });
+    socketRef.current = io(SOCKET_URL, {
+      transports: ['websocket'],
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000
+    });
 
     socketRef.current.on('connect', () => setConnected(true));
     socketRef.current.on('disconnect', () => setConnected(false));
