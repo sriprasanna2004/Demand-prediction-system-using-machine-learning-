@@ -35,13 +35,16 @@ export default function Datasets() {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: (file) => datasetsApi.upload(file),
+    mutationFn: async (file) => {
+      const result = await datasetsApi.upload(file);
+      return result;
+    },
     onSuccess: (res) => {
-      const data = res.data || res;
+      const data = res?.data || res;
       setUploadResult(data);
       setMappings({});
       setStep('mapping');
-      toast.success(`Uploaded ${data.row_count} rows — now map your columns`);
+      toast.success(`Uploaded ${data?.row_count} rows — now map your columns`);
     },
     onError: (e) => toast.error(`Upload failed: ${e.message}`)
   });

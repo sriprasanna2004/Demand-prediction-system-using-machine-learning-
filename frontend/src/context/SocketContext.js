@@ -16,9 +16,10 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     socketRef.current = io(SOCKET_URL, {
-      transports: ['websocket'],
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000
+      transports: ['polling', 'websocket'],
+      reconnectionAttempts: 3,
+      reconnectionDelay: 3000,
+      timeout: 10000
     });
 
     socketRef.current.on('connect', () => setConnected(true));
