@@ -1,11 +1,26 @@
 const router = require('express').Router();
 const axios = require('axios');
 const multer = require('multer');
-const { parse } = require('csv-parse/sync');
 const mongoose = require('mongoose');
 
 const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+
+// Parse CSV without external dependency
+function parseCSV(text) {
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n');
+  if (lines.length < 2) throw new Error('CSV must have at least a header row and one data row');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  const records = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const vals = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+    const row = {};
+    headers.forEach((h, idx) => { row[h] = vals[idx] ?? ''; });
+    records.push(row);
+  }
+  return { headers, records };
+}
 
 // Simple dataset schema stored in MongoDB directly from backend
 const DatasetSchema = new mongoose.Schema({
@@ -35,17 +50,14 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     if (!req.file) return res.status(400).json({ success: false, error: 'No file uploaded' });
 
     const content = req.file.buffer.toString('utf-8');
-    let records;
+    let records, columns;
     try {
-      records = parse(content, { columns: true, skip_empty_lines: true, trim: true });
+      const parsed = parseCSV(content);
+      records = parsed.records;
+      columns = parsed.headers;
     } catch (e) {
       return res.status(400).json({ success: false, error: `CSV parse error: ${e.message}` });
     }
-
-    if (!records.length) return res.status(400).json({ success: false, error: 'CSV file is empty' });
-
-    const dataset_id = `ds_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const columns = Object.keys(records[0]);
     const preview = records.slice(0, 5);
 
     await Dataset.create({ dataset_id, filename: req.file.originalname, columns, row_count: records.length, status: 'uploaded', preview, created_at: new Date() });
