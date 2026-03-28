@@ -1,7 +1,8 @@
 // v4.1 - forced redeploy
 import axios from 'axios';
 
-const BASE = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+const BASE = process.env.REACT_APP_API_URL
+  || (window.location.hostname === 'localhost' ? 'http://localhost:4000' : 'https://divine-surprise-production-1666.up.railway.app');
 
 const api = axios.create({ baseURL: BASE, timeout: 15000 });
 api.interceptors.response.use(
