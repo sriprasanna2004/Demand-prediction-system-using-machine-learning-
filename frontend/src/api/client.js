@@ -44,12 +44,15 @@ export const rlApi = {
   scenario: (productId, scenario) => api.post('/api/rl/scenario', { productId, scenario })
 };
 export const datasetsApi = {
-  upload: (formData) => axios.post(`${BASE}/api/datasets/upload`, formData,
-    { headers: { 'Content-Type': 'multipart/form-data' }, timeout: 30000 }).then(r => r.data),
+  upload: (formData) => {
+    const instance = axios.create({ baseURL: BASE, timeout: 60000 });
+    return instance.post('/api/datasets/upload', formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
+  },
   map: (data) => api.post('/api/datasets/map', data),
   list: () => api.get('/api/datasets'),
   remove: (id) => api.delete(`/api/datasets/${id}`),
-  train: () => api.post('/api/datasets/train')
+  train: () => axios.create({ baseURL: BASE, timeout: 200000 }).post('/api/datasets/train').then(r => r.data)
 };
 export const analyticsApi = {
   decompose: (productId, days) => api.get(`/api/analytics/decompose/${productId}`, { params: { days } }),
