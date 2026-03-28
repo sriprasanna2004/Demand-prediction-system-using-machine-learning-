@@ -13,4 +13,3 @@ lightgbm==4.3.0
 shap==0.44.1
 statsmodels==0.14.1
 python-multipart==0.0.9
-torch==2.2.0
