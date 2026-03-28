@@ -35,13 +35,9 @@ const io = new Server(server, {
 // Make io accessible in routes
 app.set('io', io);
 
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-    : ['http://localhost:3000', 'https://demand-prediction-system-using-mach.vercel.app'],
-  credentials: true
-}));
-app.use(express.json());
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(morgan('dev'));
 
 // Global rate limiter — 200 req/min per IP across all endpoints
