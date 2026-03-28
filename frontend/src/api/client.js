@@ -1,9 +1,12 @@
-// v5 - uses relative URLs proxied via vercel.json → Railway
+// Direct Railway URL — no proxy, no env var dependency
 import axios from 'axios';
 
-// In production: Vercel proxies /api/* → Railway backend
-// In development: setupProxy.js proxies /api/* → localhost:4000
-const api = axios.create({ baseURL: '', timeout: 15000 });
+const RAILWAY = 'https://divine-surprise-production-1666.up.railway.app';
+const BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:4000'
+  : RAILWAY;
+
+const api = axios.create({ baseURL: BASE, timeout: 15000 });
 
 api.interceptors.response.use(
   (res) => res.data,
@@ -54,7 +57,6 @@ export const rlApi = {
 
 export const datasetsApi = {
   upload: async (file) => {
-    // Parse CSV in browser, send as JSON — avoids multipart proxy issues
     const text = await file.text();
     const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n').filter(l => l.trim());
     if (lines.length < 2) throw new Error('CSV must have at least a header and one data row');
@@ -70,7 +72,7 @@ export const datasetsApi = {
   map: (data) => api.post('/api/datasets/map', data),
   list: () => api.get('/api/datasets'),
   remove: (id) => api.delete(`/api/datasets/${id}`),
-  train: () => axios.post('/api/datasets/train', {}, { timeout: 200000 }).then(r => r.data)
+  train: () => axios.create({ baseURL: BASE, timeout: 200000 }).post('/api/datasets/train').then(r => r.data)
 };
 
 export const analyticsApi = {

@@ -38,7 +38,7 @@ app.set('io', io);
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-    : ['http://localhost:3000'],
+    : ['http://localhost:3000', 'https://demand-prediction-system-using-mach.vercel.app'],
   credentials: true
 }));
 app.use(express.json());
