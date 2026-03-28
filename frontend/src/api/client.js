@@ -53,10 +53,20 @@ export const rlApi = {
 };
 
 export const datasetsApi = {
-  upload: (formData) => axios.post('/api/datasets/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-    timeout: 60000
-  }).then(r => r.data),
+  upload: async (file) => {
+    // Parse CSV in browser, send as JSON — avoids multipart proxy issues
+    const text = await file.text();
+    const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim().split('\n').filter(l => l.trim());
+    if (lines.length < 2) throw new Error('CSV must have at least a header and one data row');
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+    const records = lines.slice(1).map(line => {
+      const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+      const row = {};
+      headers.forEach((h, i) => { row[h] = vals[i] ?? ''; });
+      return row;
+    });
+    return api.post('/api/datasets/upload-json', { filename: file.name, headers, records });
+  },
   map: (data) => api.post('/api/datasets/map', data),
   list: () => api.get('/api/datasets'),
   remove: (id) => api.delete(`/api/datasets/${id}`),

@@ -44,8 +44,42 @@ const RawRow = mongoose.models.DatasetRaw || mongoose.model('DatasetRaw', RawRow
 const ProcessedRowSchema = new mongoose.Schema({ _dataset_id: String }, { strict: false });
 const ProcessedRow = mongoose.models.DatasetRow || mongoose.model('DatasetRow', ProcessedRowSchema);
 
-// POST /api/datasets/upload
-router.post('/upload', upload.single('file'), async (req, res) => {
+// POST /api/datasets/upload-json — receive parsed CSV as JSON (no multipart needed)
+router.post('/upload-json', async (req, res) => {
+  try {
+    const { filename, headers, records } = req.body;
+    if (!headers || !records || !records.length) {
+      return res.status(400).json({ success: false, error: 'No data provided' });
+    }
+
+    const dataset_id = `ds_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const preview = records.slice(0, 5);
+
+    await Dataset.create({
+      dataset_id, filename: filename || 'upload.csv',
+      columns: headers, row_count: records.length,
+      status: 'uploaded', preview, created_at: new Date()
+    });
+
+    const batchSize = 500;
+    for (let i = 0; i < records.length; i += batchSize) {
+      const batch = records.slice(i, i + batchSize).map(r => ({ ...r, _dataset_id: dataset_id }));
+      await RawRow.insertMany(batch, { ordered: false });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        dataset_id, filename: filename || 'upload.csv',
+        row_count: records.length, columns: headers, preview,
+        required_fields: ['date_or_month', 'quantity', 'product_name', 'category', 'price'],
+        optional_fields: ['temperature', 'trend_score', 'stock', 'day_of_week']
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
   try {
     if (!req.file) return res.status(400).json({ success: false, error: 'No file uploaded' });
 

@@ -35,11 +35,7 @@ export default function Datasets() {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: (file) => {
-      const fd = new FormData();
-      fd.append('file', file);
-      return datasetsApi.upload(fd);
-    },
+    mutationFn: (file) => datasetsApi.upload(file),
     onSuccess: (res) => {
       const data = res.data || res;
       setUploadResult(data);
