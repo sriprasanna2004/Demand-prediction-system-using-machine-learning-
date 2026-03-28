@@ -58,11 +58,14 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     } catch (e) {
       return res.status(400).json({ success: false, error: `CSV parse error: ${e.message}` });
     }
+
+    if (!records.length) return res.status(400).json({ success: false, error: 'CSV file is empty' });
+
+    const dataset_id = `ds_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const preview = records.slice(0, 5);
 
     await Dataset.create({ dataset_id, filename: req.file.originalname, columns, row_count: records.length, status: 'uploaded', preview, created_at: new Date() });
 
-    // Store raw rows in batches
     const batchSize = 500;
     for (let i = 0; i < records.length; i += batchSize) {
       const batch = records.slice(i, i + batchSize).map(r => ({ ...r, _dataset_id: dataset_id }));
