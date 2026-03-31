@@ -6,7 +6,7 @@ export function useRetrain() {
   return useMutation({
     mutationFn: () => predictApi.retrain(),
     onSuccess: (res) => {
-      const m = res?.data?.metrics;
+      const m = res?.metrics;
       toast.success(m ? `Retrained — MAE: ${m.mae}, R²: ${m.r2}` : 'Model retrained successfully');
     },
     onError: (err) => toast.error(`Retrain failed: ${err.message}`)
