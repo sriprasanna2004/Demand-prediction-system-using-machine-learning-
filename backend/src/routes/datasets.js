@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const axios = require('axios');
 const mongoose = require('mongoose');
+const Product = require('../models/Product');
+const Sale = require('../models/Sale');
 
 const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
 
@@ -51,12 +53,8 @@ router.post('/map', async (req, res) => {
     const processed = []; let errors = 0;
 
     // ── Also import as real Products + Sales ──────────────────────
-    const Product = mongoose.models.Product || mongoose.model('Product',
-      new mongoose.Schema({ name: String, category: String, price: Number, stock: Number, sku: String, isActive: { type: Boolean, default: true } }, { timestamps: true })
-    );
-    const Sale = mongoose.models.Sale || mongoose.model('Sale',
-      new mongoose.Schema({ productId: mongoose.Schema.Types.ObjectId, quantity: Number, price: Number, timestamp: Date, source: String, metadata: mongoose.Schema.Types.Mixed }, { timestamps: true })
-    );
+    const Product = require('../models/Product');
+    const Sale = require('../models/Sale');
 
     // Build product map: name → ObjectId (upsert by name)
     const productCache = {};

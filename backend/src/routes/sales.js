@@ -68,8 +68,10 @@ router.post('/', validate(saleSchema), async (req, res) => {
       source: 'manual'
     });
 
-    // Update stock
-    await Product.findByIdAndUpdate(productId, { $inc: { stock: -quantity } });
+    // Update stock (floor at 0)
+    await Product.findByIdAndUpdate(productId, {
+      $inc: { stock: -Math.min(quantity, product.stock) }
+    });
 
     const io = req.app.get('io');
     io.emit('new_sale', sale);

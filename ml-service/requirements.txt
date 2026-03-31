@@ -24,4 +24,4 @@ prometheus-fastapi-instrumentator==6.1.0
 pytrends==4.9.2
 structlog==24.1.0
 scipy==1.12.0
-# MLflow experiment trac
+neuralprophet==0.8.0

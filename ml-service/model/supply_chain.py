@@ -46,10 +46,11 @@ def train_lead_time_model(orders_data: list = None) -> dict:
     df["supplier_id_enc"] = df["supplier_id"].apply(_encode_supplier)
     df["month"] = pd.to_datetime(df["order_date"]).dt.month
     df["day_of_week"] = pd.to_datetime(df["order_date"]).dt.dayofweek
-    df["category_code"] = df.get("category", "Electronics").map(
+    cat_col = df["category"] if "category" in df.columns else pd.Series(["Electronics"] * len(df))
+    df["category_code"] = cat_col.map(
         {"Electronics": 0, "Clothing": 1, "Food": 2, "Furniture": 3, "Books": 4, "Toys": 5}
     ).fillna(-1)
-    df["price"] = df.get("price", 50).fillna(50)
+    df["price"] = df["price"].fillna(50) if "price" in df.columns else 50
 
     # Compute historical avg lead time per supplier
     avg_lead = df.groupby("supplier_id_enc")["lead_time_days"].mean().to_dict()

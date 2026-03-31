@@ -232,9 +232,7 @@ router.post('/train/ppo', async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
-module.exports = router;
-
-// ── New v4 endpoints ─────────────────────────────────────────────
+// ── v4 endpoints ─────────────────────────────────────────────────
 
 // GET /api/analytics/model-card
 router.get('/model-card', async (req, res) => {
@@ -309,3 +307,5 @@ router.post('/supply/reorder-point', async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+module.exports = router;

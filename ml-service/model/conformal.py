@@ -122,17 +122,19 @@ def train_conformal(ensemble, X_calib: np.ndarray, y_calib: np.ndarray,
     """
     try:
         from mapie.regression import MapieRegressor
-        from mapie.conformity_scores import AbsoluteConformityScore
+        try:
+            from mapie.conformity_scores import AbsoluteConformityScore
+            conformity_score = AbsoluteConformityScore()
+        except ImportError:
+            conformity_score = None
 
         X_imp = imputer.transform(X_calib)
         X_sc = scaler.transform(X_imp)
 
-        mapie = MapieRegressor(
-            estimator=ensemble.xgb,
-            method="plus",
-            cv="prefit",
-            conformity_score=AbsoluteConformityScore()
-        )
+        mapie_kwargs = dict(estimator=ensemble.xgb, method="plus", cv="prefit")
+        if conformity_score is not None:
+            mapie_kwargs["conformity_score"] = conformity_score
+        mapie = MapieRegressor(**mapie_kwargs)
         mapie.fit(X_sc, y_calib)
 
         y_pred, y_pis = mapie.predict(X_sc, alpha=alpha)

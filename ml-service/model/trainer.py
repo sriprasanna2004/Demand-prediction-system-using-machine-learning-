@@ -33,60 +33,65 @@ CATEGORY_ENCODING = {
 
 def load_training_data():
     """Pull sales + product + external data from MongoDB and build feature matrix."""
-    client = MongoClient(MONGO_URI)
-    db = client["demandforecast"]
+    try:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=8000)
+        db = client["demandforecast"]
 
-    sales = list(db.sales.find({}, {"_id": 0, "productId": 1, "quantity": 1, "timestamp": 1}))
-    products = {str(p["_id"]): p for p in db.products.find()}
-    weather_docs = list(db.externaldatas.find({"type": "weather"}).sort("timestamp", -1).limit(100))
-    trend_docs = list(db.externaldatas.find({"type": "market_trend"}).sort("timestamp", -1).limit(100))
+        sales = list(db.sales.find({}, {"_id": 0, "productId": 1, "quantity": 1, "timestamp": 1}))
+        products = {str(p["_id"]): p for p in db.products.find()}
+        weather_docs = list(db.externaldatas.find({"type": "weather"}).sort("timestamp", -1).limit(100))
+        trend_docs = list(db.externaldatas.find({"type": "market_trend"}).sort("timestamp", -1).limit(100))
+        client.close()
 
-    avg_temp = np.mean([w.get("temperature", 20) for w in weather_docs]) if weather_docs else 20
-    avg_trend = np.mean([t.get("trendScore", 50) for t in trend_docs]) if trend_docs else 50
+        avg_temp = np.mean([w.get("temperature", 20) for w in weather_docs]) if weather_docs else 20
+        avg_trend = np.mean([t.get("trendScore", 50) for t in trend_docs]) if trend_docs else 50
 
-    # Aggregate monthly sales per product
-    df_sales = pd.DataFrame(sales)
-    if df_sales.empty:
+        df_sales = pd.DataFrame(sales)
+        if df_sales.empty:
+            return _generate_synthetic_data()
+
+        df_sales["timestamp"] = pd.to_datetime(df_sales["timestamp"])
+        df_sales["month"] = df_sales["timestamp"].dt.month
+        df_sales["day_of_week"] = df_sales["timestamp"].dt.dayofweek
+        df_sales["is_weekend"] = df_sales["day_of_week"].isin([5, 6]).astype(int)
+        df_sales["productId"] = df_sales["productId"].astype(str)
+
+        rows = []
+        for pid, group in df_sales.groupby("productId"):
+            prod = products.get(pid)
+            if not prod:
+                continue
+
+            cat_code = CATEGORY_ENCODING.get(prod.get("category", ""), -1)
+            monthly_qty = group.groupby("month")["quantity"].sum()
+
+            for month, qty in monthly_qty.items():
+                rows.append({
+                    "price": prod.get("price", 10),
+                    "month": month,
+                    "day_of_week": 3,
+                    "is_weekend": 0,
+                    "avg_daily_sales_90d": qty / 90,
+                    "avg_daily_sales_30d": qty / 30,
+                    "avg_daily_sales_7d": qty / 7,
+                    "category_avg_qty": qty / len(group),
+                    "temperature": avg_temp,
+                    "weather_code": 0,
+                    "trend_score": avg_trend,
+                    "current_stock": prod.get("stock", 50),
+                    "data_quality": min(1.0, len(group) / 30),
+                    "category_code": cat_code,
+                    "target": qty
+                })
+
+        if not rows:
+            return _generate_synthetic_data()
+
+        return pd.DataFrame(rows)
+
+    except Exception as e:
+        print(f"MongoDB unavailable ({e}), using synthetic data.")
         return _generate_synthetic_data()
-
-    df_sales["timestamp"] = pd.to_datetime(df_sales["timestamp"])
-    df_sales["month"] = df_sales["timestamp"].dt.month
-    df_sales["day_of_week"] = df_sales["timestamp"].dt.dayofweek
-    df_sales["is_weekend"] = df_sales["day_of_week"].isin([5, 6]).astype(int)
-    df_sales["productId"] = df_sales["productId"].astype(str)
-
-    rows = []
-    for pid, group in df_sales.groupby("productId"):
-        prod = products.get(pid)
-        if not prod:
-            continue
-
-        cat_code = CATEGORY_ENCODING.get(prod.get("category", ""), -1)
-        monthly_qty = group.groupby("month")["quantity"].sum()
-
-        for month, qty in monthly_qty.items():
-            rows.append({
-                "price": prod.get("price", 10),
-                "month": month,
-                "day_of_week": 3,
-                "is_weekend": 0,
-                "avg_daily_sales_90d": qty / 90,
-                "avg_daily_sales_30d": qty / 30,
-                "avg_daily_sales_7d": qty / 7,
-                "category_avg_qty": qty / len(group),
-                "temperature": avg_temp,
-                "weather_code": 0,
-                "trend_score": avg_trend,
-                "current_stock": prod.get("stock", 50),
-                "data_quality": min(1.0, len(group) / 30),
-                "category_code": cat_code,
-                "target": qty  # monthly demand
-            })
-
-    if not rows:
-        return _generate_synthetic_data()
-
-    return pd.DataFrame(rows)
 
 
 def _generate_synthetic_data(n=2000):

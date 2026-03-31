@@ -83,7 +83,6 @@ export default function Datasets() {
   });
 
   const mappedCount = Object.values(mappings).filter(Boolean).length;
-  const requiredMapped = REQUIRED_FIELDS.every(f => mappings[f]);
 
   const handleDrop = (e) => {
     e.preventDefault(); setDragOver(false);
