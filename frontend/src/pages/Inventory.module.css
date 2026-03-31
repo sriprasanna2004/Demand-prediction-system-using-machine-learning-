@@ -1,0 +1,71 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+.title { font-size: 24px; font-weight: 700; }
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.muted { color: var(--muted); font-size: 13px; }
+
+.alertRow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+.alertCard {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.alertCard[data-type="danger"] { border-left: 4px solid var(--danger); }
+.alertCard[data-type="warning"] { border-left: 4px solid var(--warning); }
+.alertCard[data-type="success"] { border-left: 4px solid var(--success); }
+
+.alertIcon { font-size: 28px; }
+.alertCount { font-size: 28px; font-weight: 800; }
+.alertLabel { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+}
+
+.cardTitle {
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px;
+}
+
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; padding: 8px 12px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--border); }
+.table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.table tr:last-child td { border-bottom: none; }
+
+.productName { font-weight: 600; }
+.stockCell { font-weight: 700; font-size: 15px; }
+
+.catBadge {
+  background: var(--surface2); padding: 2px 8px;
+  border-radius: 12px; font-size: 11px; color: var(--accent2);
+}
+
+.statusBadge { font-weight: 700; font-size: 12px; }
+
+.actionTag {
+  padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+}
+.actionTag[data-action="reorder"] { background: rgba(239,68,68,0.15); color: var(--danger); }
+.actionTag[data-action="discount"] { background: rgba(245,158,11,0.15); color: var(--warning); }
+
+.reorderGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+
+.reorderCard {
+  background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 6px;
+}
+.reorderName { font-weight: 700; font-size: 14px; }
+.reorderDetail { font-size: 13px; color: var(--muted); }
+.reorderInsight { font-size: 12px; color: var(--danger); }
+
+/* Stockout risk bar */
+.riskBar {
+  display: flex; align-items: center; gap: 6px;
+  width: 80px;
+}
+.riskFill {
+  height: 6px; border-radius: 3px; flex: 1; min-width: 4px;
+  transition: width 0.4s ease;
+}
+.riskLabel { font-size: 11px; font-weight: 700; color: var(--muted); width: 28px; }

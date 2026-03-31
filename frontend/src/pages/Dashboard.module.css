@@ -1,0 +1,119 @@
+.page { display: flex; flex-direction: column; gap: 28px; }
+
+/* Header */
+.header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 8px;
+}
+.title {
+  font-size: 28px; font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+.sectionLabel {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: -16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sectionLabel::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(99,102,241,0.3), transparent);
+}
+
+/* Live badge */
+.statusBadge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 24px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 12px; font-weight: 600; color: var(--muted);
+  backdrop-filter: blur(10px);
+}
+.statusBadge[data-connected="true"] {
+  color: var(--success);
+  border-color: rgba(16,185,129,0.25);
+  background: rgba(16,185,129,0.06);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.statusBadge[data-connected="true"] .dot {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: livePulse 1.5s infinite;
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Grids */
+.statsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* Glass card */
+.card {
+  background: rgba(255,255,255,0.025);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 24px;
+  position: relative; overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+.card:hover {
+  border-color: rgba(99,102,241,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(99,102,241,0.05);
+  transform: translateY(-1px);
+}
+
+.cardTitle {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.08em;
+  display: flex; align-items: center; gap: 8px;
+}
+.cardTitle::before {
+  content: ''; width: 3px; height: 14px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+}
+
+/* Alert list */
+.empty { color: var(--muted); font-size: 13px; }
+.alertList { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.alertItem {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.alertItem:hover { background: rgba(239,68,68,0.1); }
+.stockBadge {
+  background: rgba(239,68,68,0.2); color: #fca5a5;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+  border: 1px solid rgba(239,68,68,0.3);
+}
+
+/* External signals */
+.externalGrid { display: flex; flex-direction: column; gap: 0; }
+.externalItem {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.2s;
+}
+.externalItem:last-child { border-bottom: none; }
+.externalItem:hover { padding-left: 4px; }
+.exLabel { color: var(--muted); font-size: 13px; }
+.cacheNote { font-size: 11px; color: var(--warning); margin-top: 8px; }
+
+@media (max-width: 1100px) { .statsGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+@media (max-width: 500px) { .statsGrid { grid-template-columns: 1fr; } }

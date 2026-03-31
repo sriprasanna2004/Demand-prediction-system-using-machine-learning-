@@ -1,0 +1,32 @@
+.empty {
+  color: var(--muted); font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  height: 120px; gap: 8px;
+}
+.list { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
+.item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: all 0.2s;
+  animation: feedIn 0.3s ease;
+}
+@keyframes feedIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.item:hover { background: rgba(255,255,255,0.06); border-color: rgba(99,102,241,0.2); }
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); flex-shrink: 0;
+  box-shadow: 0 0 6px var(--success);
+  animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+}
+.info { flex: 1; min-width: 0; }
+.name { font-size: 13px; font-weight: 600; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.time { font-size: 11px; color: var(--muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
