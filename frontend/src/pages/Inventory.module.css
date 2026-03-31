@@ -58,3 +58,14 @@
 .reorderName { font-weight: 700; font-size: 14px; }
 .reorderDetail { font-size: 13px; color: var(--muted); }
 .reorderInsight { font-size: 12px; color: var(--danger); }
+
+/* Stockout risk bar */
+.riskBar {
+  display: flex; align-items: center; gap: 6px;
+  width: 80px;
+}
+.riskFill {
+  height: 6px; border-radius: 3px; flex: 1; min-width: 4px;
+  transition: width 0.4s ease;
+}
+.riskLabel { font-size: 11px; font-weight: 700; color: var(--muted); width: 28px; }

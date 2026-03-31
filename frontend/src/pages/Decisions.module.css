@@ -112,3 +112,13 @@
   .topGrid { grid-template-columns: 1fr; }
   .scenarioGrid { grid-template-columns: 1fr; }
 }
+
+.methodBadge {
+  font-size: 10px; color: var(--muted); font-family: monospace;
+  padding: 2px 8px; background: rgba(255,255,255,0.04);
+  border-radius: 6px; border: 1px solid rgba(255,255,255,0.06);
+  align-self: flex-start;
+}
+.dosRow {
+  font-size: 12px; color: var(--muted);
+}

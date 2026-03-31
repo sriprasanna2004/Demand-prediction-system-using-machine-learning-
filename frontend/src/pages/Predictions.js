@@ -110,6 +110,20 @@ export default function Predictions() {
                   {result.predictedDemand}
                   <span className={styles.bigUnit}> units / month</span>
                 </motion.div>
+
+                {/* Conformal prediction interval */}
+                {result.lower_bound != null && result.upper_bound != null && (
+                  <div className={styles.intervalRow}>
+                    <span className={styles.intervalLabel}>
+                      {result.coverage ? `${(result.coverage * 100).toFixed(0)}% CI` : '90% CI'}
+                    </span>
+                    <span className={styles.intervalRange}>
+                      {result.lower_bound} – {result.upper_bound} units
+                    </span>
+                    <span className={styles.intervalMethod}>{result.method}</span>
+                  </div>
+                )}
+
                 <ConfidenceMeter score={result.confidenceScore} />
                 <div className={styles.metaGrid}>
                   <div className={styles.metaItem}>
@@ -172,7 +186,7 @@ export default function Predictions() {
         ) : (
           <table className={styles.table}>
             <thead>
-              <tr><th>Product</th><th>Predicted Demand</th><th>Confidence</th><th>Method</th></tr>
+              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th></tr>
             </thead>
             <tbody>
               {batchData?.map((row, i) => (
@@ -181,6 +195,11 @@ export default function Predictions() {
                   transition={{ delay: i * 0.04 }}>
                   <td>{row.name}</td>
                   <td className={styles.demandCell}>{row.predicted_demand} units</td>
+                  <td>
+                    {row.lower_bound != null
+                      ? <span className={styles.intervalSmall}>{row.lower_bound}–{row.upper_bound}</span>
+                      : <span className={styles.muted}>—</span>}
+                  </td>
                   <td>
                     <span className={styles.confBadge}
                       style={{ background: `rgba(99,102,241,${row.confidence_score})`, color: '#fff' }}>

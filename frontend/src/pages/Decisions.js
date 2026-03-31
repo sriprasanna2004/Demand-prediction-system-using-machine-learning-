@@ -80,6 +80,14 @@ export default function Decisions() {
                 {decision.reorder_quantity > 0 && (
                   <div className={styles.reorderQty}>Order <strong>{decision.reorder_quantity}</strong> units</div>
                 )}
+                {decision.method && (
+                  <div className={styles.methodBadge}>via {decision.method.replace(/_/g, ' ')}</div>
+                )}
+                {decision.state?.days_of_supply != null && (
+                  <div className={styles.dosRow}>
+                    Days of supply: <strong>{decision.state.days_of_supply}d</strong>
+                  </div>
+                )}
                 <div className={styles.reasoningList}>
                   {decision.reasoning?.map((r, i) => (
                     <motion.div key={i} className={styles.reasonItem}

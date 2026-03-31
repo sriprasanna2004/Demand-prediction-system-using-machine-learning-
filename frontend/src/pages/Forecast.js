@@ -98,6 +98,11 @@ export default function Forecast() {
                   <span className={styles.badge}>
                     Data Points: {forecastData.data_points}
                   </span>
+                  {forecastData.method && (
+                    <span className={styles.badge} style={{ background: 'rgba(16,185,129,0.12)', color: '#6ee7b7' }}>
+                      {forecastData.method.replace(/_/g, ' ')}
+                    </span>
+                  )}
                 </div>
               </div>
               <ForecastChart data={forecastData.points} horizon={horizon} />
