@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -64,7 +64,12 @@ export default function Datasets() {
     mutationFn: () => datasetsApi.train(),
     onSuccess: (res) => {
       const m = res.data?.metrics;
-      toast.success(m ? `Ensemble retrained — MAE: ${m.mae}, R²: ${m.r2}, MAPE: ${m.mape}%` : 'Model retrained');
+      const note = res.data?.note;
+      if (note) {
+        toast(`⚠️ ${note}`, { icon: '⚠️', duration: 6000 });
+      } else {
+        toast.success(m ? `Ensemble retrained — MAE: ${m.mae}, R²: ${m.r2}, MAPE: ${m.mape}%` : 'Model retrained');
+      }
     },
     onError: (e) => toast.error(`Training failed: ${e.message}`)
   });
@@ -73,6 +78,9 @@ export default function Datasets() {
     mutationFn: (id) => datasetsApi.remove(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['datasets'] }); toast.success('Dataset deleted'); }
   });
+
+  const mappedCount = Object.values(mappings).filter(Boolean).length;
+  const requiredMapped = REQUIRED_FIELDS.every(f => mappings[f]);
 
   const handleDrop = (e) => {
     e.preventDefault(); setDragOver(false);
@@ -86,7 +94,20 @@ export default function Datasets() {
     if (file) uploadMutation.mutate(file);
   };
 
-  const mappedCount = Object.values(mappings).filter(Boolean).length;
+  const [trainSeconds, setTrainSeconds] = useState(0);
+
+  useEffect(() => {
+    if (!trainMutation.isPending) { setTrainSeconds(0); return; }
+    const t = setInterval(() => setTrainSeconds(s => s + 1), 1000);
+    return () => clearInterval(t);
+  }, [trainMutation.isPending]);
+
+  const trainStage = trainSeconds < 10 ? 'Loading data...'
+    : trainSeconds < 30 ? 'Filtering anomalies...'
+    : trainSeconds < 60 ? 'Training XGBoost + LightGBM...'
+    : trainSeconds < 90 ? 'Fitting meta-learner...'
+    : trainSeconds < 110 ? 'Calibrating conformal intervals...'
+    : 'Saving models...';
   const requiredMapped = REQUIRED_FIELDS.every(f => mappings[f]);
 
   return (
@@ -194,9 +215,10 @@ export default function Datasets() {
               <button className={styles.btnPrimary}
                 onClick={() => trainMutation.mutate()}
                 disabled={trainMutation.isPending}>
-                {trainMutation.isPending ? '🔄 Training ensemble (~2 min)...' : '🚀 Retrain AI Model Now'}
-              </button>
-              <button className={styles.btnSecondary} onClick={() => { setStep('list'); setUploadResult(null); }}>
+                {trainMutation.isPending
+                  ? `🔄 ${trainStage} (${trainSeconds}s)`
+                  : '🚀 Retrain AI Model Now'}
+              </button>              <button className={styles.btnSecondary} onClick={() => { setStep('list'); setUploadResult(null); }}>
                 Upload Another
               </button>
             </div>
@@ -213,7 +235,7 @@ export default function Datasets() {
               <button className={styles.btnTrain}
                 onClick={() => trainMutation.mutate()}
                 disabled={trainMutation.isPending}>
-                {trainMutation.isPending ? '🔄 Training...' : '🚀 Retrain on All Data'}
+                {trainMutation.isPending ? `🔄 ${trainStage} (${trainSeconds}s)` : '🚀 Retrain on All Data'}
               </button>
             )}
           </div>
