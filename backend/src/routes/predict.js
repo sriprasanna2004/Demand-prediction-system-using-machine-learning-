@@ -28,7 +28,7 @@ router.post('/', validate(predictSchema), async (req, res) => {
     let fallbackReason = null;
 
     try {
-      const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 8000 });
+      const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 4000 });
       prediction = mlRes.data;
     } catch (mlErr) {
       // ML service unavailable — use statistical fallback
@@ -78,7 +78,7 @@ router.get('/batch', async (req, res) => {
       products.map(async (product) => {
         const features = await buildFeatureVector(product, targetDate, product.price);
         try {
-          const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 6000 });
+          const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 3000 });
           return { productId: product._id, name: product.name, ...mlRes.data };
         } catch {
           const fallback = await getFallbackPrediction(product, features);

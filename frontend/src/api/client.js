@@ -6,11 +6,23 @@ const BASE = typeof window !== 'undefined' && window.location.hostname === 'loca
   ? 'http://localhost:4000'
   : RAILWAY;
 
-const api = axios.create({ baseURL: BASE, timeout: 15000 });
+const api = axios.create({ baseURL: BASE, timeout: 30000 });
+
+// Keep-alive ping every 10 minutes to prevent Render cold starts
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    axios.get(`${BASE}/health`, { timeout: 5000 }).catch(() => {});
+  }, 10 * 60 * 1000);
+}
 
 api.interceptors.response.use(
   (res) => res.data,
-  (err) => Promise.reject(new Error(err.response?.data?.error || err.message || 'Request failed'))
+  (err) => {
+    if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+      return Promise.reject(new Error('Server is waking up — please try again in a moment'));
+    }
+    return Promise.reject(new Error(err.response?.data?.error || err.message || 'Request failed'));
+  }
 );
 
 export const productsApi = {

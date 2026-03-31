@@ -101,6 +101,15 @@ cron.schedule('*/15 * * * *', async () => {
   }
 });
 
+// Keep ML service warm — ping every 8 minutes to prevent Railway cold start
+cron.schedule('*/8 * * * *', async () => {
+  try {
+    const axios = require('axios');
+    const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+    await axios.get(`${ML_URL}/health`, { timeout: 5000 });
+  } catch (_) { /* silent — just a keep-alive */ }
+});
+
 // Nightly ML model retrain at 2:00 AM
 cron.schedule('0 2 * * *', async () => {
   try {

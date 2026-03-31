@@ -6,11 +6,11 @@ const { buildFeatureVector } = require('../services/featureBuilder');
 
 const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
 
-async function mlGet(path, params = {}, timeout = 12000) {
+async function mlGet(path, params = {}, timeout = 4000) {
   const res = await axios.get(`${ML_URL}${path}`, { params, timeout });
   return res.data;
 }
-async function mlPost(path, body = {}, timeout = 12000) {
+async function mlPost(path, body = {}, timeout = 4000) {
   const res = await axios.post(`${ML_URL}${path}`, body, { timeout });
   return res.data;
 }
