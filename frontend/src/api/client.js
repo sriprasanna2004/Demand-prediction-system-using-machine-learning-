@@ -83,7 +83,13 @@ export const analyticsApi = {
   performance: (days) => api.get('/api/analytics/monitor/performance', { params: { days } }),
   drift: () => api.get('/api/analytics/monitor/drift'),
   audit: (productId, limit) => api.get('/api/analytics/monitor/audit', { params: { productId, limit } }),
-  trainPPO: () => api.post('/api/analytics/train/ppo')
+  trainPPO: () => api.post('/api/analytics/train/ppo'),
+  // v4 additions
+  modelCard: (days) => api.get('/api/analytics/model-card', { params: { days } }),
+  experiments: (limit) => api.get('/api/analytics/experiments', { params: { limit } }),
+  optimizePrice: (data) => api.post('/api/analytics/optimize/price', data),
+  batchPredictions: (limit) => api.get('/api/analytics/batch-predictions', { params: { limit } }),
+  reorderPoint: (data) => api.post('/api/analytics/supply/reorder-point', data),
 };
 
 export default api;

@@ -8,6 +8,7 @@ import Forecast from './pages/Forecast';
 import Decisions from './pages/Decisions';
 import Datasets from './pages/Datasets';
 import Analytics from './pages/Analytics';
+import ModelCard from './pages/ModelCard';
 import { SocketProvider } from './context/SocketContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectionBanner from './components/ConnectionBanner';
@@ -22,6 +23,7 @@ const NAV = [
   { to: '/inventory',  label: 'Inventory',   icon: '🏭' },
   { to: '/datasets',   label: 'Datasets',    icon: '🗂️' },
   { to: '/analytics',  label: 'Analytics',   icon: '🔬' },
+  { to: '/model-card', label: 'Model Card',  icon: '📋' },
 ];
 
 export default function App() {
@@ -53,7 +55,7 @@ export default function App() {
             <div className={styles.sidebarFooter}>
               <div className={styles.footerBadge}>
                 <span className={styles.footerDot} />
-                <span className={styles.footerText}>RandomForest + PPO · All systems live</span>
+                <span className={styles.footerText}>Ensemble + PPO · All systems live</span>
               </div>
             </div>
           </aside>
@@ -69,6 +71,7 @@ export default function App() {
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/datasets" element={<Datasets />} />
                 <Route path="/analytics" element={<Analytics />} />
+                <Route path="/model-card" element={<ModelCard />} />
                 <Route path="*" element={
                   <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--muted)' }}>
                     <div style={{ fontSize: 48 }}>404</div>

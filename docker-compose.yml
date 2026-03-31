@@ -8,10 +8,26 @@ services:
       - '27017:27017'
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
     healthcheck:
       test: ['CMD', 'mongosh', '--eval', 'db.adminCommand("ping")']
       interval: 10s
       timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: demandai_redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
       retries: 5
 
   ml-service:
@@ -21,14 +37,24 @@ services:
       - '5001:5001'
     environment:
       - MONGO_URI=mongodb://mongo:27017/demandforecast
+      - REDIS_URL=redis://redis:6379
       - PORT=5001
       - MODEL_PATH=./models/demand_model.joblib
+      - ENSEMBLE_PATH=./models/ensemble_model.joblib
+      - CONFORMAL_PATH=./models/conformal_model.joblib
+      - CLUSTER_PATH=./models/cluster_models.joblib
+      - PPO_SB3_PATH=./models/ppo_sb3.zip
       - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:4000
+      - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
     volumes:
       - ml_models:/app/models
     depends_on:
       mongo:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5001/health']
       interval: 15s
@@ -53,6 +79,7 @@ services:
         condition: service_healthy
       ml-service:
         condition: service_healthy
+    restart: unless-stopped
 
   frontend:
     build:
@@ -64,7 +91,9 @@ services:
       - '3000:80'
     depends_on:
       - backend
+    restart: unless-stopped
 
 volumes:
   mongo_data:
+  redis_data:
   ml_models:

@@ -233,3 +233,79 @@ router.post('/train/ppo', async (req, res) => {
 });
 
 module.exports = router;
+
+// ── New v4 endpoints ─────────────────────────────────────────────
+
+// GET /api/analytics/model-card
+router.get('/model-card', async (req, res) => {
+  try {
+    const data = await mlGet('/model/card', { days: req.query.days || 30 }, 10000);
+    res.json({ success: true, data });
+  } catch (_) {
+    res.json({ success: true, data: {
+      note: 'ML service unavailable',
+      overall: { mae: null, mape: null, bias_pct: null, service_level_pct: null },
+      mape_by_category: {}, mape_by_tier: {}
+    }});
+  }
+});
+
+// GET /api/analytics/experiments
+router.get('/experiments', async (req, res) => {
+  try {
+    const data = await mlGet('/experiments', { limit: req.query.limit || 20 }, 8000);
+    res.json({ success: true, data: data.runs || [] });
+  } catch (_) {
+    res.json({ success: true, data: [] });
+  }
+});
+
+// POST /api/analytics/optimize/price
+router.post('/optimize/price', async (req, res) => {
+  try {
+    const { productId, marginFloor } = req.body;
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+    const features = await buildFeatureVector(product, null, product.price);
+    const baseDemand = (features.avg_daily_sales_30d || 1) * 30;
+    const data = await mlPost('/optimize/price', {
+      product_id: productId,
+      base_price: product.price,
+      base_demand: baseDemand,
+      cost_per_unit: product.price * 0.4,
+      margin_floor: marginFloor || 0.15
+    }, 10000);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/analytics/batch-predictions
+router.get('/batch-predictions', async (req, res) => {
+  try {
+    const data = await mlGet('/batch/results', { limit: req.query.limit || 50 }, 8000);
+    res.json({ success: true, data: data.data || [] });
+  } catch (_) {
+    res.json({ success: true, data: [] });
+  }
+});
+
+// POST /api/analytics/supply/reorder-point
+router.post('/supply/reorder-point', async (req, res) => {
+  try {
+    const { productId, supplierId } = req.body;
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
+    const features = await buildFeatureVector(product, null, product.price);
+    const dailyDemand = features.avg_daily_sales_30d || 1;
+    const data = await mlGet('/supply/reorder-point', {
+      daily_demand: dailyDemand,
+      supplier_id: supplierId || 'default',
+      category: product.category
+    }, 8000);
+    res.json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
