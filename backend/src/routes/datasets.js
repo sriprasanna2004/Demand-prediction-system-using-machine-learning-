@@ -50,6 +50,33 @@ router.post('/map', async (req, res) => {
     const CAT_ENC = { Electronics:0,Clothing:1,Food:2,Furniture:3,Books:4,Toys:5 };
     const processed = []; let errors = 0;
 
+    // ── Also import as real Products + Sales ──────────────────────
+    const Product = mongoose.models.Product || mongoose.model('Product',
+      new mongoose.Schema({ name: String, category: String, price: Number, stock: Number, sku: String, isActive: { type: Boolean, default: true } }, { timestamps: true })
+    );
+    const Sale = mongoose.models.Sale || mongoose.model('Sale',
+      new mongoose.Schema({ productId: mongoose.Schema.Types.ObjectId, quantity: Number, price: Number, timestamp: Date, source: String, metadata: mongoose.Schema.Types.Mixed }, { timestamps: true })
+    );
+
+    // Build product map: name → ObjectId (upsert by name)
+    const productCache = {};
+    const getOrCreateProduct = async (name, category, price, stock) => {
+      const key = `${name}__${category}`;
+      if (productCache[key]) return productCache[key];
+      let prod = await Product.findOne({ name: name.trim() });
+      if (!prod) {
+        prod = await Product.create({
+          name: name.trim(), category: category || 'Electronics',
+          price: parseFloat(price) || 50, stock: parseInt(stock) || 100,
+          isActive: true
+        });
+      }
+      productCache[key] = prod._id;
+      return prod._id;
+    };
+
+    const salesToInsert = [];
+
     for (const row of rawRows) {
       try {
         const qtyCol = mappings.quantity;
@@ -59,26 +86,75 @@ router.post('/map', async (req, res) => {
         const price = mappings.price && row[mappings.price] ? parseFloat(row[mappings.price]) : 50;
         const category = mappings.category && row[mappings.category] ? String(row[mappings.category]) : 'Electronics';
         const product_name = mappings.product_name && row[mappings.product_name] ? String(row[mappings.product_name]) : 'Unknown';
+        const stock = mappings.stock && row[mappings.stock] ? parseFloat(row[mappings.stock]) : 100;
+
         let month = 6;
+        let saleDate = new Date();
         if (mappings.date_or_month && row[mappings.date_or_month]) {
           const v = row[mappings.date_or_month];
           const d = new Date(v);
-          month = !isNaN(d.getTime()) ? d.getMonth() + 1 : Math.min(12, Math.max(1, parseInt(v) || 6));
+          if (!isNaN(d.getTime())) {
+            month = d.getMonth() + 1;
+            saleDate = d;
+          } else {
+            month = Math.min(12, Math.max(1, parseInt(v) || 6));
+            // Approximate date from month
+            const year = new Date().getFullYear();
+            saleDate = new Date(year, month - 1, 15);
+          }
         }
+
         const temperature = mappings.temperature && row[mappings.temperature] ? parseFloat(row[mappings.temperature]) : 20;
         const trend_score = mappings.trend_score && row[mappings.trend_score] ? parseFloat(row[mappings.trend_score]) : 50;
-        const stock = mappings.stock && row[mappings.stock] ? parseFloat(row[mappings.stock]) : 50;
         const day_of_week = mappings.day_of_week && row[mappings.day_of_week] ? parseInt(row[mappings.day_of_week]) : 3;
-        processed.push({ _dataset_id: dataset_id, quantity: qty, price, category, product_name, month, temperature, trend_score, stock, day_of_week, avg_daily_sales_90d: qty/90, avg_daily_sales_30d: qty/30, avg_daily_sales_7d: qty/7, category_avg_qty: qty/30, data_quality: 0.8, category_code: CAT_ENC[category] ?? -1, seasonal_index: SEASONAL[month] || 1.0, is_weekend: day_of_week >= 5 ? 1 : 0 });
+
+        // Create/get product and queue sale
+        const productId = await getOrCreateProduct(product_name, category, price, stock);
+        salesToInsert.push({
+          productId, quantity: Math.round(qty), price,
+          timestamp: saleDate, source: 'api',
+          metadata: { dataset_id, temperature, trend_score }
+        });
+
+        processed.push({
+          _dataset_id: dataset_id, quantity: qty, price, category, product_name, month,
+          temperature, trend_score, stock, day_of_week,
+          avg_daily_sales_90d: qty/90, avg_daily_sales_30d: qty/30, avg_daily_sales_7d: qty/7,
+          category_avg_qty: qty/30, data_quality: 0.8,
+          category_code: CAT_ENC[category] ?? -1,
+          seasonal_index: SEASONAL[month] || 1.0,
+          is_weekend: day_of_week >= 5 ? 1 : 0
+        });
       } catch { errors++; }
     }
 
+    // Bulk insert processed rows
     if (processed.length) {
       for (let i = 0; i < processed.length; i += 500)
         await ProcessedRow.insertMany(processed.slice(i, i + 500), { ordered: false });
     }
-    await Dataset.updateOne({ dataset_id }, { $set: { status: 'mapped', processed_rows: processed.length, errors, mappings, mapped_at: new Date() } });
-    res.json({ success: true, data: { processed_rows: processed.length, errors, message: `Processed ${processed.length} rows. Ready to retrain.` } });
+
+    // Bulk insert sales (in batches)
+    let salesInserted = 0;
+    if (salesToInsert.length) {
+      for (let i = 0; i < salesToInsert.length; i += 500) {
+        await Sale.insertMany(salesToInsert.slice(i, i + 500), { ordered: false });
+        salesInserted += Math.min(500, salesToInsert.length - i);
+      }
+    }
+
+    const productsCreated = Object.keys(productCache).length;
+
+    await Dataset.updateOne({ dataset_id }, { $set: {
+      status: 'mapped', processed_rows: processed.length, errors, mappings, mapped_at: new Date()
+    }});
+
+    res.json({ success: true, data: {
+      processed_rows: processed.length, errors,
+      products_created: productsCreated,
+      sales_inserted: salesInserted,
+      message: `Imported ${processed.length} rows → ${productsCreated} products, ${salesInserted} sales. Ready to retrain.`
+    }});
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

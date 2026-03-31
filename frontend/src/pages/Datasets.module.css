@@ -115,6 +115,8 @@
 .successIcon { font-size: 48px; }
 .successCard h2 { font-size: 20px; font-weight: 700; color: var(--success); }
 .successCard p { color: var(--muted); font-size: 13px; }
+.successHint { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+.successHint strong { color: var(--text2); }
 .successActions { display: flex; gap: 12px; margin-top: 8px; }
 
 /* Dataset list */

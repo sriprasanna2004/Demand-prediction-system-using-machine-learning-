@@ -55,7 +55,10 @@ export default function Datasets() {
       const data = res.data || res;
       setStep('done');
       qc.invalidateQueries({ queryKey: ['datasets'] });
-      toast.success(`Mapped ${data.processed_rows} rows successfully`);
+      qc.invalidateQueries({ queryKey: ['products'] });
+      qc.invalidateQueries({ queryKey: ['insights'] });
+      const msg = data.message || `Mapped ${data.processed_rows} rows successfully`;
+      toast.success(msg, { duration: 6000 });
     },
     onError: (e) => toast.error(`Mapping failed: ${e.message}`)
   });
@@ -209,8 +212,12 @@ export default function Datasets() {
           <motion.div className={styles.successCard}
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
             <div className={styles.successIcon}>✅</div>
-            <h2>Dataset Ready</h2>
-            <p>Your data has been processed and added to the training pool.</p>
+            <h2>Data Imported Successfully</h2>
+            <p>Your products and sales history are now live in the system.</p>
+            <p className={styles.successHint}>
+              Check <strong>Products</strong>, <strong>Dashboard</strong>, <strong>Analytics</strong> and <strong>Predictions</strong> — your data is there.
+              Retrain the model below to improve forecast accuracy with your data.
+            </p>
             <div className={styles.successActions}>
               <button className={styles.btnPrimary}
                 onClick={() => trainMutation.mutate()}
