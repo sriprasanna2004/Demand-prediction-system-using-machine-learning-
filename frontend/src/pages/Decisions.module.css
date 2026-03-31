@@ -20,6 +20,10 @@
   background: var(--surface2); border: 1px solid var(--border);
   color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 13px;
 }
+.select option {
+  background: #1a1a2e;
+  color: #e2e8f0;
+}
 
 .btnPrimary {
   padding: 9px 18px; background: var(--accent); color: #fff;

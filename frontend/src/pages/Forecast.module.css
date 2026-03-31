@@ -14,6 +14,10 @@
   color: var(--text); padding: 8px 12px; border-radius: 8px;
   font-size: 13px; min-width: 200px;
 }
+.select option {
+  background: #1a1a2e;
+  color: #e2e8f0;
+}
 
 .horizonGroup { display: flex; gap: 4px; }
 .horizonBtn {
