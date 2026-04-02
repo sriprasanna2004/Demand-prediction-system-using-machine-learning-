@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Product = require('../models/Product');
 const Sale = require('../models/Sale');
 
-const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
 
 const DatasetSchema = new mongoose.Schema({
   dataset_id: String, filename: String, columns: [String],

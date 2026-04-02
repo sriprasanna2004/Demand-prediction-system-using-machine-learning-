@@ -59,7 +59,7 @@ app.get('/health', async (_, res) => {
   let mlOk = false;
   try {
     const axios = require('axios');
-    await axios.get(`${process.env.ML_SERVICE_URL || 'http://localhost:5001'}/health`, { timeout: 3000 });
+    await axios.get(`${process.env.ML_SERVICE_URL || 'http://localhost:5001'}/health`, { timeout: 8000 });
     mlOk = true;
   } catch (_e) { /* ml down */ }
 
@@ -105,7 +105,7 @@ cron.schedule('*/15 * * * *', async () => {
 cron.schedule('*/8 * * * *', async () => {
   try {
     const axios = require('axios');
-    const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+    const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
     await axios.get(`${ML_URL}/health`, { timeout: 5000 });
   } catch (_) { /* silent — just a keep-alive */ }
 });
@@ -114,7 +114,7 @@ cron.schedule('*/8 * * * *', async () => {
 cron.schedule('0 2 * * *', async () => {
   try {
     const axios = require('axios');
-    const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+    const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
     const res = await axios.post(`${ML_URL}/train`, {}, { timeout: 120000 });
     console.log('Nightly retrain complete:', res.data?.metrics);
   } catch (err) {

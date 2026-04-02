@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 const Sale = require('../models/Sale');
 const { buildFeatureVector } = require('../services/featureBuilder');
 
-const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
 
 const CATEGORY_BASE = { Electronics: 2, Clothing: 5, Food: 10, Furniture: 1, Books: 4, Toys: 3 };
 

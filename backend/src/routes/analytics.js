@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 const Sale = require('../models/Sale');
 const { buildFeatureVector } = require('../services/featureBuilder');
 
-const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
 
 async function mlGet(path, params = {}, timeout = 4000) {
   const res = await axios.get(`${ML_URL}${path}`, { params, timeout });

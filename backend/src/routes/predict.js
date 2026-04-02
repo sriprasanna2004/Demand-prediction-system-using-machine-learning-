@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 const { buildFeatureVector, getFallbackPrediction } = require('../services/featureBuilder');
 const validate = require('../middleware/validate');
 
-const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
 
 const predictSchema = {
   productId: { type: 'string', required: true },

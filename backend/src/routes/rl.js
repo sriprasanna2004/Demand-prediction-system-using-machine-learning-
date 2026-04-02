@@ -3,7 +3,7 @@ const axios = require('axios');
 const Product = require('../models/Product');
 const { buildFeatureVector } = require('../services/featureBuilder');
 
-const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
 
 const ACTION_LABELS = {
   WAIT: 'Hold current stock — demand is stable',
