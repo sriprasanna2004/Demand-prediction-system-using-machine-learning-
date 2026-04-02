@@ -105,13 +105,14 @@ export const analyticsApi = {
 };
 
 export const vizApi = {
-  overview:          () => api.get('/api/viz/overview'),
-  timeseries:        (limit) => api.get('/api/viz/timeseries', { params: { limit } }),
-  byCategory:        () => api.get('/api/viz/by-category'),
-  topProducts:       (limit) => api.get('/api/viz/top-products', { params: { limit } }),
-  monthly:           () => api.get('/api/viz/monthly'),
-  priceDistribution: () => api.get('/api/viz/price-distribution'),
-  stockHealth:       () => api.get('/api/viz/stock-health'),
+  datasetsList:      ()             => api.get('/api/viz/datasets-list'),
+  overview:          (dsId)         => api.get('/api/viz/overview',          { params: { dataset_id: dsId } }),
+  timeseries:        (dsId, limit)  => api.get('/api/viz/timeseries',        { params: { dataset_id: dsId, limit } }),
+  byCategory:        (dsId)         => api.get('/api/viz/by-category',       { params: { dataset_id: dsId } }),
+  topProducts:       (dsId, limit)  => api.get('/api/viz/top-products',      { params: { dataset_id: dsId, limit } }),
+  monthly:           (dsId)         => api.get('/api/viz/monthly',           { params: { dataset_id: dsId } }),
+  priceDistribution: (dsId)         => api.get('/api/viz/price-distribution',{ params: { dataset_id: dsId } }),
+  stockHealth:       (dsId)         => api.get('/api/viz/stock-health',      { params: { dataset_id: dsId } }),
 };
 
 export default api;

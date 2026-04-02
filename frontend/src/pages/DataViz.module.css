@@ -3,6 +3,25 @@
 .title    { font-size: 22px; font-weight: 800; letter-spacing: -.03em; color: var(--text); }
 .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
+/* Dataset selector */
+.selectorRow {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-radius: var(--radius);
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.18);
+}
+.selectorLabel { font-size: 12px; font-weight: 600; color: #a5b4fc; white-space: nowrap; }
+.dsSelect {
+  flex: 1; max-width: 420px;
+  padding: 8px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(99,102,241,0.25);
+  color: var(--text); font-size: 13px; font-family: inherit; outline: none;
+  cursor: pointer;
+}
+.dsSelect:focus { border-color: rgba(99,102,241,0.5); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.dsSelect option { background: #0d1220; }
+.dsCount { font-size: 11px; color: var(--muted); margin-left: auto; }
+
 /* Overview pills */
 .pillRow {
   display: grid;
