@@ -66,12 +66,18 @@ export default function Datasets() {
   const trainMutation = useMutation({
     mutationFn: () => datasetsApi.train(),
     onSuccess: (res) => {
+      // Invalidate ALL dashboard queries so data refreshes immediately
+      qc.invalidateQueries({ queryKey: ['insights'] });
+      qc.invalidateQueries({ queryKey: ['timeseries'] });
+      qc.invalidateQueries({ queryKey: ['products'] });
+      qc.invalidateQueries({ queryKey: ['batch-predict'] });
+      qc.invalidateQueries({ queryKey: ['batch-ml-predictions'] });
       const m = res.data?.metrics;
       const note = res.data?.note;
       if (note) {
         toast(`⚠️ ${note}`, { icon: '⚠️', duration: 6000 });
       } else {
-        toast.success(m ? `Ensemble retrained — MAE: ${m.mae}, R²: ${m.r2}, MAPE: ${m.mape}%` : 'Model retrained');
+        toast.success(m ? `Ensemble retrained — MAE: ${m.mae}, R²: ${m.r2}, MAPE: ${m.mape}%` : 'Model retrained', { duration: 5000 });
       }
     },
     onError: (e) => toast.error(`Training failed: ${e.message}`)
