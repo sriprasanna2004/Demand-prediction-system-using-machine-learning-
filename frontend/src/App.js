@@ -9,6 +9,7 @@ import Decisions from './pages/Decisions';
 import Datasets from './pages/Datasets';
 import Analytics from './pages/Analytics';
 import ModelCard from './pages/ModelCard';
+import DataViz from './pages/DataViz';
 import { SocketProvider } from './context/SocketContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectionBanner from './components/ConnectionBanner';
@@ -24,12 +25,14 @@ const NAV = [
   { to: '/products',    label: 'Products',     icon: '◈' },
   { to: '/datasets',    label: 'Datasets',     icon: '⊞' },
   { to: '/model-card',  label: 'Model Card',   icon: '◉' },
+  { to: '/data-viz',    label: 'Data Viz',     icon: '◈' },
 ];
 
 const PAGE_TITLES = {
   '/': 'Dashboard', '/predictions': 'Predictions', '/forecast': 'Forecast',
   '/decisions': 'RL Decisions', '/inventory': 'Inventory', '/analytics': 'Analytics',
   '/products': 'Products', '/datasets': 'Datasets', '/model-card': 'Model Card',
+  '/data-viz': 'Data Visualizations',
 };
 
 function Topbar() {
@@ -97,6 +100,7 @@ function MainContent() {
               <Route path="/datasets"    element={<Datasets />} />
               <Route path="/analytics"   element={<Analytics />} />
               <Route path="/model-card"  element={<ModelCard />} />
+              <Route path="/data-viz"    element={<DataViz />} />
               <Route path="*" element={
                 <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--muted)' }}>
                   <div style={{ fontSize: 56, marginBottom: 16 }}>404</div>

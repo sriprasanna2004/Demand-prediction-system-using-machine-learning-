@@ -104,4 +104,14 @@ export const analyticsApi = {
   reorderPoint: (data) => api.post('/api/analytics/supply/reorder-point', data),
 };
 
+export const vizApi = {
+  overview:          () => api.get('/api/viz/overview'),
+  timeseries:        (limit) => api.get('/api/viz/timeseries', { params: { limit } }),
+  byCategory:        () => api.get('/api/viz/by-category'),
+  topProducts:       (limit) => api.get('/api/viz/top-products', { params: { limit } }),
+  monthly:           () => api.get('/api/viz/monthly'),
+  priceDistribution: () => api.get('/api/viz/price-distribution'),
+  stockHealth:       () => api.get('/api/viz/stock-health'),
+};
+
 export default api;

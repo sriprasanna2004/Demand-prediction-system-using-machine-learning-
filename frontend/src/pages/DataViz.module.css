@@ -1,0 +1,115 @@
+.page { display: flex; flex-direction: column; gap: 24px; }
+
+.title    { font-size: 22px; font-weight: 800; letter-spacing: -.03em; color: var(--text); }
+.subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* Overview pills */
+.pillRow {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+@media (max-width: 1200px) { .pillRow { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 700px)  { .pillRow { grid-template-columns: repeat(2, 1fr); } }
+
+.statPill {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 18px; border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+  border: 1px solid var(--border);
+  transition: transform .2s, border-color .2s;
+}
+.statPill:hover { transform: translateY(-2px); border-color: rgba(99,102,241,0.2); }
+.statPillIcon {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.statPillValue { font-size: 20px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+.statPillLabel { font-size: 10.5px; color: var(--muted); font-weight: 500; margin-top: 3px; text-transform: uppercase; letter-spacing: .05em; }
+
+/* Charts grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+.vizCard {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  transition: border-color .2s;
+}
+.vizCard:hover { border-color: rgba(99,102,241,0.15); }
+.vizCard[data-span="2"] { grid-column: span 2; }
+@media (max-width: 900px) { .vizCard[data-span="2"] { grid-column: span 1; } }
+
+.vizCardHeader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.vizCardTitle { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.vizBadge {
+  font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+  background: rgba(99,102,241,0.1); color: #a5b4fc;
+  border: 1px solid rgba(99,102,241,0.2);
+}
+
+/* Stock health table */
+.stockTable { display: flex; flex-direction: column; gap: 0; }
+.stockHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 80px 100px 1fr 90px;
+  gap: 8px; padding: 8px 12px;
+  font-size: 10.5px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .06em;
+  border-bottom: 1px solid var(--border);
+}
+.stockBody { display: flex; flex-direction: column; }
+.stockRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 80px 100px 1fr 90px;
+  gap: 8px; padding: 10px 12px; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: background .15s;
+}
+.stockRow:hover { background: rgba(255,255,255,0.025); }
+.stockRow:last-child { border-bottom: none; }
+.stockName { font-size: 12.5px; font-weight: 600; color: var(--text); }
+.stockCat  { font-size: 11.5px; color: var(--muted); }
+
+.dosBar {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.05); border-radius: 20px;
+  height: 8px; position: relative; overflow: visible;
+}
+.dosFill {
+  height: 100%; border-radius: 20px;
+  transition: width .4s ease-out;
+  min-width: 4px;
+}
+.dosLabel {
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+  margin-left: 4px;
+}
+
+.statusBadge {
+  font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  text-transform: capitalize; width: fit-content;
+}
+.statusBadge[data-status="critical"] { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.statusBadge[data-status="low"]      { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+.statusBadge[data-status="ok"]       { background: rgba(6,182,212,0.12);  color: #67e8f9; border: 1px solid rgba(6,182,212,0.2); }
+.statusBadge[data-status="healthy"]  { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+
+/* Empty state */
+.emptyState {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 0; gap: 16px; text-align: center;
+}
+.emptyIcon { font-size: 56px; }
+.emptyState h2 { font-size: 20px; font-weight: 700; color: var(--text); }
+.emptyState p  { font-size: 14px; color: var(--muted); max-width: 400px; line-height: 1.6; }
+.emptyState strong { color: var(--accent); }
