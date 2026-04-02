@@ -1,41 +1,18 @@
-import { useState, useEffect } from 'react';
 import { useSocket } from '../context/SocketContext';
-import styles from './ConnectionBanner.module.css';
 
 export default function ConnectionBanner() {
   const { connected } = useSocket();
-  const [wakingUp, setWakingUp] = useState(false);
-  const [wakeSeconds, setWakeSeconds] = useState(0);
-
-  useEffect(() => {
-    if (!connected) {
-      // After 3s of no connection, show "waking up" message
-      const t = setTimeout(() => setWakingUp(true), 3000);
-      return () => clearTimeout(t);
-    } else {
-      setWakingUp(false);
-      setWakeSeconds(0);
-    }
-  }, [connected]);
-
-  useEffect(() => {
-    if (!wakingUp) return;
-    const interval = setInterval(() => setWakeSeconds(s => s + 1), 1000);
-    return () => clearInterval(interval);
-  }, [wakingUp]);
-
   if (connected) return null;
-
   return (
-    <div className={styles.banner}>
-      <span className={styles.spinner} />
-      {wakingUp ? (
-        <span>
-          Server is waking up ({wakeSeconds}s) — free tier cold start, ready in ~20s
-        </span>
-      ) : (
-        <span>Connecting to live data stream...</span>
-      )}
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      padding: '10px 16px', borderRadius: 12, marginBottom: 16,
+      background: 'rgba(245,158,11,0.08)',
+      border: '1px solid rgba(245,158,11,0.2)',
+      fontSize: 12.5, color: '#fbbf24', fontWeight: 500,
+    }}>
+      <span>⚡</span>
+      Reconnecting to live feed — data may be delayed
     </div>
   );
 }
