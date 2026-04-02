@@ -8,11 +8,10 @@ const mongoose = require('mongoose');
 const Sale = require('../models/Sale');
 const Product = require('../models/Product');
 
-// Build match stage — filter to uploaded data only, optionally by dataset_id
+// Build match stage — optionally filter by dataset_id
 function buildMatch(datasetId) {
-  const match = { source: 'api' };
-  if (datasetId) match['metadata.dataset_id'] = datasetId;
-  return match;
+  if (datasetId) return { 'metadata.dataset_id': datasetId };
+  return {};  // show all data when no specific dataset selected
 }
 
 // GET /api/viz/overview
