@@ -21,6 +21,8 @@
 .dsSelect:focus { border-color: rgba(99,102,241,0.5); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
 .dsSelect option { background: #0d1220; }
 .dsCount { font-size: 11px; color: var(--muted); margin-left: auto; }
+.dsInfo  { font-size: 11px; color: var(--muted); margin-left: 12px; max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.noChart { color: var(--muted); font-size: 13px; text-align: center; padding: 40px 0; }
 
 /* Overview pills */
 .pillRow {
