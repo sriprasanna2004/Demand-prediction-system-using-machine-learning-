@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
 const fadeUp = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: .28 } } };
@@ -25,7 +24,6 @@ function SettingCard({ title, children }) {
 }
 
 export default function Settings() {
-  const { user } = useAuth();
   const [alertEmail, setAlertEmail] = useState('');
   const [testEmail, setTestEmail] = useState('');
 
@@ -71,19 +69,7 @@ export default function Settings() {
 
         {/* Account */}
         <SettingCard title="Account">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {[
-              { label: 'Name',  value: user?.name  || '—' },
-              { label: 'Email', value: user?.email || '—' },
-              { label: 'Role',  value: user?.role  || '—' },
-              { label: 'Member since', value: user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—' },
-            ].map(f => (
-              <div key={f.label} style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: 10.5, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>{f.label}</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{f.value}</div>
-              </div>
-            ))}
-          </div>
+          <p style={{ fontSize: 13, color: 'var(--muted)' }}>Authentication is disabled. All users have full access.</p>
         </SettingCard>
 
         {/* Email Alerts */}
