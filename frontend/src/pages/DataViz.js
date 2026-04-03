@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { exportDataVizPDF } from '../utils/exportPDF';
+
+const exportVizPDF = async (...args) => {
+  const { exportDataVizPDF } = await import('../utils/exportPDF');
+  exportVizPDF(...args);
+};
 import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
   PieChart, Pie, Cell, RadarChart, Radar,
@@ -122,7 +126,7 @@ export default function DataViz() {
           </div>
         )}
         {!noDatasets && !noData && (
-          <button onClick={() => exportDataVizPDF(overview, topProds, byCategory, monthly)}
+          <button onClick={() => exportVizPDF(overview, topProds, byCategory, monthly)}
             style={{
               marginLeft: 'auto', padding: '7px 16px', borderRadius: 10,
               background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)',
@@ -393,3 +397,4 @@ export default function DataViz() {
     </div>
   );
 }
+

@@ -6,7 +6,12 @@ import { insightsApi, externalApi, vizApi } from '../api/client';
 import { useSocket } from '../context/SocketContext';
 import Skeleton from '../components/Skeleton';
 import styles from './Dashboard.module.css';
-import { exportDashboardPDF } from '../utils/exportPDF';
+
+// Lazy PDF export — loaded only when button clicked, won't crash app on load
+const exportPDF = async (...args) => {
+  const { exportDashboardPDF } = await import('../utils/exportPDF');
+  exportPDF(...args);
+};
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
@@ -165,7 +170,7 @@ export default function Dashboard() {
             📂 Showing data from: <strong>{activeDataset?.filename}</strong>
           </span>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => exportDashboardPDF(insights, timeseries, chartTopProducts)}
+            <button onClick={() => exportPDF(insights, timeseries, chartTopProducts)}
               style={{
                 background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)',
                 color: '#6ee7b7', padding: '4px 12px', borderRadius: 8,
@@ -183,7 +188,7 @@ export default function Dashboard() {
 
       {!isDatasetMode && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 4 }}>
-          <button onClick={() => exportDashboardPDF(insights, timeseries, chartTopProducts)}
+          <button onClick={() => exportPDF(insights, timeseries, chartTopProducts)}
             style={{
               background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
               color: 'var(--muted)', padding: '6px 14px', borderRadius: 10,
@@ -421,3 +426,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
