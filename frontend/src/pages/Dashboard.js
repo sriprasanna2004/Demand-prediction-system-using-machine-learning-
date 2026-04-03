@@ -6,6 +6,7 @@ import { insightsApi, externalApi, vizApi } from '../api/client';
 import { useSocket } from '../context/SocketContext';
 import Skeleton from '../components/Skeleton';
 import styles from './Dashboard.module.css';
+import { exportDashboardPDF } from '../utils/exportPDF';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
@@ -163,15 +164,35 @@ export default function Dashboard() {
           <span style={{ color: '#a5b4fc', fontWeight: 600 }}>
             📂 Showing data from: <strong>{activeDataset?.filename}</strong>
           </span>
-          <button onClick={() => navigate('/data-viz')}
-            style={{
-              background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)',
-              color: '#a5b4fc', padding: '4px 12px', borderRadius: 8,
-              fontSize: 11, fontWeight: 600, cursor: 'pointer',
-            }}>
-            View Full Analysis →
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => exportDashboardPDF(insights, timeseries, chartTopProducts)}
+              style={{
+                background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)',
+                color: '#6ee7b7', padding: '4px 12px', borderRadius: 8,
+                fontSize: 11, fontWeight: 600, cursor: 'pointer',
+              }}>⬇ PDF</button>
+            <button onClick={() => navigate('/data-viz')}
+              style={{
+                background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)',
+                color: '#a5b4fc', padding: '4px 12px', borderRadius: 8,
+                fontSize: 11, fontWeight: 600, cursor: 'pointer',
+              }}>View Full Analysis →</button>
+          </div>
         </motion.div>
+      )}
+
+      {!isDatasetMode && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 4 }}>
+          <button onClick={() => exportDashboardPDF(insights, timeseries, chartTopProducts)}
+            style={{
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+              color: 'var(--muted)', padding: '6px 14px', borderRadius: 10,
+              fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all .2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(16,185,129,0.4)'; e.currentTarget.style.color = '#6ee7b7'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--muted)'; }}
+          >⬇ Export PDF</button>
+        </div>
       )}
 
       {/* KPI row */}

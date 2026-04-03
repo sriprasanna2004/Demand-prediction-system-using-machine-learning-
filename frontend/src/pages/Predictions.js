@@ -6,6 +6,8 @@ import { productsApi, predictApi, forecastApi } from "../api/client";
 import { useRetrain } from "../hooks/useRetrain";
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import DataQualityBadge from "../components/DataQualityBadge";
+import FeedbackModal from "../components/FeedbackModal";
+import { exportPredictionsPDF } from "../utils/exportPDF";
 import styles from "./Predictions.module.css";
 
 const stockColor = { UNDERSTOCK: "var(--danger)", OVERSTOCK: "var(--warning)", OPTIMAL: "var(--success)" };
@@ -33,6 +35,7 @@ export default function Predictions() {
   const [explanation, setExplanation] = useState(null);
   const [whatIfPrice, setWhatIfPrice] = useState(null);
   const [whatIfResult, setWhatIfResult] = useState(null);
+  const [feedbackRow, setFeedbackRow] = useState(null);
   const retrain = useRetrain();
 
   const { data: products } = useQuery({
@@ -265,7 +268,7 @@ export default function Predictions() {
         ) : (
           <table className={styles.table}>
             <thead>
-              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th></tr>
+              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th><th>Feedback</th></tr>
             </thead>
             <tbody>
               {batchData?.map((row, i) => (
@@ -286,12 +289,24 @@ export default function Predictions() {
                     </span>
                   </td>
                   <td className={styles.muted}>{row.method || "random_forest"}</td>
+                  <td>
+                    <button onClick={() => setFeedbackRow(row)}
+                      style={{
+                        padding: '3px 10px', borderRadius: 8, border: '1px solid rgba(16,185,129,0.3)',
+                        background: 'rgba(16,185,129,0.08)', color: '#6ee7b7',
+                        fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                      }}>+ Actual</button>
+                  </td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      {feedbackRow && (
+        <FeedbackModal prediction={feedbackRow} onClose={() => setFeedbackRow(null)} />
+      )}
     </div>
   );
 }

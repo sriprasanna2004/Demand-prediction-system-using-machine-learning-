@@ -102,6 +102,7 @@ export const analyticsApi = {
   optimizePrice: (data) => api.post('/api/analytics/optimize/price', data),
   batchPredictions: (limit) => api.get('/api/analytics/batch-predictions', { params: { limit } }),
   reorderPoint: (data) => api.post('/api/analytics/supply/reorder-point', data),
+  feedback: (data) => api.post('/api/analytics/monitor/feedback', data),
 };
 
 export const vizApi = {

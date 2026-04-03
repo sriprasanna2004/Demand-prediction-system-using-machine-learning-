@@ -18,9 +18,12 @@ const rlRoutes = require('./routes/rl');
 const datasetRoutes = require('./routes/datasets');
 const analyticsRoutes = require('./routes/analytics');
 const vizRoutes = require('./routes/visualizations');
+const authRoutes = require('./routes/auth');
+const alertRoutes = require('./routes/alerts');
 const { runSimulation } = require('./services/simulationEngine');
 const { emitDashboardUpdate } = require('./services/socketService');
 const { fetchWeather, fetchMarketTrend } = require('./services/externalApiService');
+const { sendLowStockAlert, sendDriftAlert, sendRetrainComplete } = require('./services/emailService');
 const rateLimiter = require('./middleware/rateLimiter');
 
 const app = express();
@@ -47,6 +50,8 @@ app.use(morgan('dev'));
 app.use(rateLimiter({ max: 200, windowMs: 60000 }));
 
 // Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/alerts', alertRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/predict', rateLimiter({ max: 60, windowMs: 60000 }), predictRoutes);
@@ -124,8 +129,23 @@ cron.schedule('0 2 * * *', async () => {
     const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
     const res = await axios.post(`${ML_URL}/train`, {}, { timeout: 120000 });
     console.log('Nightly retrain complete:', res.data?.metrics);
+    await sendRetrainComplete(res.data?.metrics);
   } catch (err) {
     console.error('Nightly retrain failed:', err.message);
+  }
+});
+
+// Daily low stock check at 8 AM
+cron.schedule('0 8 * * *', async () => {
+  try {
+    const Product = require('./models/Product');
+    const lowStock = await Product.find({ isActive: true, stock: { $lt: 20 } }).select('name category stock').lean();
+    if (lowStock.length > 0) {
+      await sendLowStockAlert(lowStock);
+      console.log(`Low stock alert sent for ${lowStock.length} products`);
+    }
+  } catch (err) {
+    console.error('Low stock check failed:', err.message);
   }
 });
 
