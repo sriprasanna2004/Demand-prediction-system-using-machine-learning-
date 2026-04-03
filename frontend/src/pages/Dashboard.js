@@ -146,19 +146,23 @@ export default function Dashboard() {
           </div>
           <div className={styles.insightList}>
             {(insights?.insights?.length ? insights.insights : [
-              'Demand is stable — maintain current inventory levels.',
-              'No significant drift detected in recent predictions.',
-              'Model confidence is high based on available data.',
-            ]).map((msg, i) => (
-              <motion.div key={i} className={styles.insightItem}
-                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: .35 + i * .08 }}>
-                <span className={styles.insightDot} style={{
-                  background: i === 0 ? 'var(--accent)' : i === 1 ? 'var(--success)' : 'var(--warning)'
-                }} />
-                {msg}
-              </motion.div>
-            ))}
+              { type: 'neutral', icon: '✅', title: 'Demand Stable', text: 'Demand is steady. Maintain current inventory levels.' },
+              { type: 'neutral', icon: '📊', title: 'No drift detected', text: 'Model confidence is high based on available data.' },
+            ]).map((msg, i) => {
+              const item = typeof msg === 'string' ? { type: 'neutral', icon: '💡', title: '', text: msg } : msg;
+              const dotColor = item.type === 'positive' ? 'var(--success)' : item.type === 'danger' ? 'var(--danger)' : item.type === 'warning' ? 'var(--warning)' : 'var(--accent)';
+              return (
+                <motion.div key={i} className={styles.insightItem}
+                  initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: .35 + i * .08 }}>
+                  <span style={{ fontSize: 16, flexShrink: 0 }}>{item.icon}</span>
+                  <div>
+                    {item.title && <div style={{ fontWeight: 700, fontSize: 12.5, color: dotColor, marginBottom: 2 }}>{item.title}</div>}
+                    <div style={{ fontSize: 12, color: 'var(--text2)', lineHeight: 1.5 }}>{item.text}</div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 

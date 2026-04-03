@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { datasetsApi } from '../api/client';
 import styles from './Datasets.module.css';
@@ -23,6 +24,7 @@ const FIELD_LABELS = {
 
 export default function Datasets() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const fileRef = useRef();
   const [dragOver, setDragOver] = useState(false);
   const [uploadResult, setUploadResult] = useState(null);
@@ -57,6 +59,7 @@ export default function Datasets() {
       qc.invalidateQueries({ queryKey: ['datasets'] });
       qc.invalidateQueries({ queryKey: ['products'] });
       qc.invalidateQueries({ queryKey: ['insights'] });
+      qc.invalidateQueries({ queryKey: ['timeseries'] });
       const msg = data.message || `Mapped ${data.processed_rows} rows successfully`;
       toast.success(msg, { duration: 6000 });
     },
@@ -66,7 +69,6 @@ export default function Datasets() {
   const trainMutation = useMutation({
     mutationFn: () => datasetsApi.train(),
     onSuccess: (res) => {
-      // Invalidate ALL dashboard queries so data refreshes immediately
       qc.invalidateQueries({ queryKey: ['insights'] });
       qc.invalidateQueries({ queryKey: ['timeseries'] });
       qc.invalidateQueries({ queryKey: ['products'] });
@@ -77,8 +79,10 @@ export default function Datasets() {
       if (note) {
         toast(`⚠️ ${note}`, { icon: '⚠️', duration: 6000 });
       } else {
-        toast.success(m ? `Ensemble retrained — MAE: ${m.mae}, R²: ${m.r2}, MAPE: ${m.mape}%` : 'Model retrained', { duration: 5000 });
+        toast.success(m ? `Model retrained — MAE: ${m.mae}, R²: ${m.r2}` : 'Model retrained', { duration: 4000 });
       }
+      // Auto-redirect to dashboard after 1.5s
+      setTimeout(() => navigate('/'), 1500);
     },
     onError: (e) => toast.error(`Training failed: ${e.message}`)
   });

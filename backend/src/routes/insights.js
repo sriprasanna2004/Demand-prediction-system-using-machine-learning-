@@ -87,18 +87,40 @@ router.get('/', async (req, res) => {
     }
 
     const insights = [];
-    if (parseFloat(demandChange) > 5)
-      insights.push(`Demand increased by ${demandChange}% compared to the previous period.`);
-    else if (parseFloat(demandChange) < -5)
-      insights.push(`Demand dropped by ${Math.abs(demandChange)}%. Consider promotional strategies.`);
+
+    const demandPct = parseFloat(demandChange);
+
+    // Demand trend insight
+    if (demandPct > 15)
+      insights.push({ type: 'positive', icon: '📈', title: 'Strong Demand Growth', text: `Demand surged ${demandChange}% vs last period. Consider increasing stock levels to avoid shortages.` });
+    else if (demandPct > 5)
+      insights.push({ type: 'positive', icon: '↗️', title: 'Demand Rising', text: `Demand is up ${demandChange}% — a positive trend. Monitor top products for potential stockouts.` });
+    else if (demandPct < -15)
+      insights.push({ type: 'danger', icon: '📉', title: 'Demand Drop Alert', text: `Demand fell ${Math.abs(demandChange)}% vs last period. Run promotions or reduce procurement to avoid overstock.` });
+    else if (demandPct < -5)
+      insights.push({ type: 'warning', icon: '⚠️', title: 'Demand Softening', text: `Demand declined ${Math.abs(demandChange)}%. Review pricing strategy and consider targeted discounts.` });
     else
-      insights.push('Demand is stable. Maintain current inventory levels.');
-    if (lowStock.length > 0)
-      insights.push(`${lowStock.length} product(s) are critically low on stock — reorder recommended.`);
+      insights.push({ type: 'neutral', icon: '✅', title: 'Demand Stable', text: 'Demand is steady. Maintain current inventory levels and monitor for seasonal shifts.' });
+
+    // Low stock alerts
+    if (lowStock.length > 3)
+      insights.push({ type: 'danger', icon: '🚨', title: 'Critical Stock Alert', text: `${lowStock.length} products are critically low. Immediate reorder required to prevent stockouts and lost revenue.` });
+    else if (lowStock.length > 0)
+      insights.push({ type: 'warning', icon: '⚠️', title: 'Low Stock Warning', text: `${lowStock.length} product(s) need restocking: ${lowStock.map(p => p.name).join(', ')}.` });
+
+    // Revenue insight
+    if (displayRevenue > 0) {
+      const profitEst = displayRevenue * 0.4;
+      insights.push({ type: 'neutral', icon: '💰', title: 'Revenue Snapshot', text: `Estimated profit: $${profitEst.toLocaleString(undefined, { maximumFractionDigits: 0 })} (40% margin). Idle stock cost: $${idleStockCost}/month.` });
+    }
+
+    // Historical data insight
     if (allTimeTotal > 0 && currentTotal === 0)
-      insights.push(`${allTimeTotal.toLocaleString()} total units in historical data. Run predictions to generate forecasts.`);
-    if (totalStockValue > 0)
-      insights.push(`Total stock value: $${totalStockValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}. Idle cost estimate: $${idleStockCost}/month.`);
+      insights.push({ type: 'neutral', icon: '📊', title: 'Historical Data Ready', text: `${allTimeTotal.toLocaleString()} units in historical data. Run predictions to generate demand forecasts.` });
+
+    // Top product insight
+    if (topProds.length > 0)
+      insights.push({ type: 'positive', icon: '🏆', title: 'Top Performer', text: `"${topProds[0].name}" leads demand with ${topProds[0].qty} units. Prioritize stock replenishment for this product.` });
 
     res.json({
       success: true,

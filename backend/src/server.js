@@ -59,11 +59,12 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/viz', vizRoutes);
 
 app.get('/health', async (_, res) => {
-  const dbState = mongoose.connection.readyState; // 1 = connected
+  const dbState = mongoose.connection.readyState;
+  const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
   let mlOk = false;
   try {
     const axios = require('axios');
-    await axios.get(`${process.env.ML_SERVICE_URL || 'http://localhost:5001'}/health`, { timeout: 8000 });
+    await axios.get(`${ML_URL}/health`, { timeout: 8000 });
     mlOk = true;
   } catch (_e) { /* ml down */ }
 
@@ -71,7 +72,8 @@ app.get('/health', async (_, res) => {
     status: 'ok',
     ts: new Date(),
     db: dbState === 1 ? 'connected' : 'disconnected',
-    ml: mlOk ? 'connected' : 'unavailable'
+    ml: mlOk ? 'connected' : 'unavailable',
+    ml_url: ML_URL
   });
 });
 
@@ -105,12 +107,13 @@ cron.schedule('*/15 * * * *', async () => {
   }
 });
 
-// Keep ML service warm — ping every 8 minutes to prevent Railway cold start
-cron.schedule('*/8 * * * *', async () => {
+// Keep ML service warm — ping every 5 minutes to prevent Railway cold start
+cron.schedule('*/5 * * * *', async () => {
   try {
     const axios = require('axios');
     const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
-    await axios.get(`${ML_URL}/health`, { timeout: 5000 });
+    const res = await axios.get(`${ML_URL}/health`, { timeout: 8000 });
+    if (res.data?.status !== 'ok') console.warn('ML service health check failed:', res.data);
   } catch (_) { /* silent — just a keep-alive */ }
 });
 
