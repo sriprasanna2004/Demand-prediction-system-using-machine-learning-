@@ -6,6 +6,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
+const compression = require('compression');
 
 const productRoutes = require('./routes/products');
 const salesRoutes = require('./routes/sales');
@@ -37,6 +38,7 @@ const io = new Server(server, {
 app.set('io', io);
 
 app.use(cors());
+app.use(compression()); // gzip all responses
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(morgan('dev'));
@@ -138,6 +140,13 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
+    // Ensure indexes for performance
+    const db = mongoose.connection.db;
+    db.collection('sales').createIndex({ productId: 1, timestamp: -1 }).catch(() => {});
+    db.collection('sales').createIndex({ timestamp: -1 }).catch(() => {});
+    db.collection('sales').createIndex({ source: 1, 'metadata.dataset_id': 1 }).catch(() => {});
+    db.collection('products').createIndex({ isActive: 1, category: 1 }).catch(() => {});
+    db.collection('prediction_audit').createIndex({ product_id: 1, timestamp: -1 }).catch(() => {});
     const PORT = process.env.PORT || 4000;
     server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })

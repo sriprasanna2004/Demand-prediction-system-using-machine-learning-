@@ -13,6 +13,9 @@ export default function Products() {
   const [editId, setEditId] = useState(null);
   const [saleForm, setSaleForm] = useState({ productId: '', quantity: '' });
   const [showSaleModal, setShowSaleModal] = useState(false);
+  const [search, setSearch] = useState('');
+  const [filterCat, setFilterCat] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['products'],
@@ -23,8 +26,7 @@ export default function Products() {
     mutationFn: (d) => editId ? productsApi.update(editId, d) : productsApi.create(d),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['products'] });
-      setForm(EMPTY_FORM);
-      setEditId(null);
+      setForm(EMPTY_FORM); setEditId(null);
       toast.success(editId ? 'Product updated' : 'Product created');
     },
     onError: (e) => toast.error(e.message)
@@ -32,17 +34,13 @@ export default function Products() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => productsApi.remove(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['products'] }); toast.success('Product removed'); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['products'] }); toast.success('Product removed'); setConfirmDelete(null); },
     onError: (e) => toast.error(e.message)
   });
 
   const saleMutation = useMutation({
     mutationFn: (d) => salesApi.create(d),
-    onSuccess: () => {
-      setShowSaleModal(false);
-      setSaleForm({ productId: '', quantity: '' });
-      toast.success('Sale recorded');
-    },
+    onSuccess: () => { setShowSaleModal(false); setSaleForm({ productId: '', quantity: '' }); toast.success('Sale recorded'); },
     onError: (e) => toast.error(e.message)
   });
 
@@ -55,6 +53,12 @@ export default function Products() {
     e.preventDefault();
     saveMutation.mutate({ ...form, price: parseFloat(form.price), stock: parseInt(form.stock) });
   };
+
+  const filtered = data?.filter(p => {
+    const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase());
+    const matchCat    = !filterCat || p.category === filterCat;
+    return matchSearch && matchCat;
+  });
 
   return (
     <div className={styles.page}>
@@ -90,35 +94,41 @@ export default function Products() {
 
         <div className={styles.tableCard}>
           <div className={styles.tableHeader}>
-            <h2 className={styles.cardTitle}>Products ({data?.length || 0})</h2>
+            <h2 className={styles.cardTitle}>Products ({filtered?.length || 0})</h2>
             <button className={styles.btnAccent} onClick={() => setShowSaleModal(true)}>
               + Record Sale
             </button>
           </div>
+          {/* Search + filter bar */}
+          <div className={styles.searchRow}>
+            <input className={styles.searchInput} placeholder="🔍 Search products..."
+              value={search} onChange={e => setSearch(e.target.value)} />
+            <select className={styles.filterSelect} value={filterCat} onChange={e => setFilterCat(e.target.value)}>
+              <option value="">All categories</option>
+              {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+            </select>
+          </div>
           {isLoading ? <p className={styles.muted}>Loading...</p> : (
             <table className={styles.table}>
               <thead>
-                <tr>
-                  <th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th>
-                </tr>
+                <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
               </thead>
               <tbody>
-                {data?.map((p) => (
+                {filtered?.map(p => (
                   <tr key={p._id} className={p.stock < 20 ? styles.lowStockRow : ''}>
                     <td>{p.name}</td>
                     <td><span className={styles.catBadge}>{p.category}</span></td>
                     <td>${p.price.toFixed(2)}</td>
-                    <td>
-                      <span className={p.stock < 20 ? styles.stockDanger : styles.stockOk}>
-                        {p.stock}
-                      </span>
-                    </td>
+                    <td><span className={p.stock < 20 ? styles.stockDanger : styles.stockOk}>{p.stock}</span></td>
                     <td className={styles.actions}>
                       <button className={styles.btnEdit} onClick={() => handleEdit(p)}>Edit</button>
-                      <button className={styles.btnDel} onClick={() => deleteMutation.mutate(p._id)}>Del</button>
+                      <button className={styles.btnDel} onClick={() => setConfirmDelete(p)}>Del</button>
                     </td>
                   </tr>
                 ))}
+                {filtered?.length === 0 && (
+                  <tr><td colSpan={5} style={{ textAlign: 'center', color: 'var(--muted)', padding: 24 }}>No products found</td></tr>
+                )}
               </tbody>
             </table>
           )}
@@ -143,6 +153,27 @@ export default function Products() {
                 {saleMutation.isPending ? 'Saving...' : 'Record Sale'}
               </button>
               <button className={styles.btnSecondary} onClick={() => setShowSaleModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm delete dialog */}
+      {confirmDelete && (
+        <div className={styles.overlay}>
+          <div className={styles.modal}>
+            <h2 className={styles.cardTitle} style={{ color: 'var(--danger)' }}>⚠️ Delete Product</h2>
+            <p style={{ color: 'var(--text2)', marginBottom: 20, fontSize: 14 }}>
+              Are you sure you want to delete <strong>{confirmDelete.name}</strong>? This cannot be undone.
+            </p>
+            <div className={styles.btnRow}>
+              <button className={styles.btnPrimary}
+                style={{ background: 'var(--danger)' }}
+                onClick={() => deleteMutation.mutate(confirmDelete._id)}
+                disabled={deleteMutation.isPending}>
+                {deleteMutation.isPending ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+              <button className={styles.btnSecondary} onClick={() => setConfirmDelete(null)}>Cancel</button>
             </div>
           </div>
         </div>

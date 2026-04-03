@@ -63,11 +63,12 @@ class StackedEnsemble:
         path = Path(ENSEMBLE_PATH)
         if path.exists():
             data = joblib.load(path)
-            self.xgb = data["xgb"]
+            self.xgb  = data["xgb"]
             self.lgbm = data["lgbm"]
             self.meta = data["meta"]
             self.imputer = data["imputer"]
-            self.scaler = data["scaler"]
+            self.scaler  = data["scaler"]
+            self.cat  = data.get("cat")   # CatBoost (optional)
             log.info("ensemble_loaded", path=ENSEMBLE_PATH)
         else:
             log.warning("ensemble_not_found", path=ENSEMBLE_PATH)
@@ -84,15 +85,17 @@ class StackedEnsemble:
         row["category_code"] = CATEGORY_ENCODING.get(cat, -1)
         month = int(features.get("month", 6))
         row["seasonal_index"] = SEASONAL_INDEX.get(month, 1.0)
-        avg7 = features.get("avg_daily_sales_7d", 0)
+        avg7  = features.get("avg_daily_sales_7d",  0)
         avg30 = features.get("avg_daily_sales_30d", 0)
-        row["sales_momentum"] = (avg7 - avg30) / max(avg30, 0.01)
-        price = features.get("price", 50)
-        row["price_elasticity_proxy"] = -1.2 * (price / 100)
-        stock = features.get("current_stock", 50)
-        row["stock_coverage_days"] = stock / max(avg30, 0.01)
         avg90 = features.get("avg_daily_sales_90d", 0)
-        row["demand_volatility"] = abs(avg7 - avg90) / max(avg90, 0.01)
+        row["sales_momentum"]        = (avg7 - avg30) / max(avg30, 0.01)
+        row["price_elasticity_proxy"] = -1.2 * (features.get("price", 50) / 100)
+        row["stock_coverage_days"]   = features.get("current_stock", 50) / max(avg30, 0.01)
+        row["demand_volatility"]     = abs(avg7 - avg90) / max(avg90, 0.01)
+        # Extra engineered features
+        row["price_x_trend"]         = features.get("price", 50) * features.get("trend_score", 50) / 5000
+        row["weekend_x_trend"]       = features.get("is_weekend", 0) * features.get("trend_score", 50) / 100
+        row["stock_demand_ratio"]    = features.get("current_stock", 50) / max(avg30 * 30, 1)
         return row
 
     def predict(self, features: dict) -> dict:
@@ -102,21 +105,31 @@ class StackedEnsemble:
             row = self._engineer_features(features)
             X = pd.DataFrame([row])[FEATURE_COLS].fillna(0)
             X_imp = self.imputer.transform(X)
-            X_sc = self.scaler.transform(X_imp)
+            X_sc  = self.scaler.transform(X_imp)
 
-            p_xgb = float(self.xgb.predict(X_sc)[0])
+            p_xgb  = float(self.xgb.predict(X_sc)[0])
             p_lgbm = float(self.lgbm.predict(X_sc)[0])
-            meta_X = np.array([[p_xgb, p_lgbm]])
+
+            if self.cat is not None:
+                try:
+                    p_cat = float(self.cat.predict(X_sc)[0])
+                    meta_X = np.array([[p_xgb, p_lgbm, p_cat]])
+                except Exception:
+                    meta_X = np.array([[p_xgb, p_lgbm]])
+            else:
+                meta_X = np.array([[p_xgb, p_lgbm]])
+
             pred = float(self.meta.predict(meta_X)[0])
             pred = max(0, pred)
 
             dq = features.get("data_quality", 0.5)
             confidence = min(0.95, 0.5 + dq * 0.4)
+            method = "stacked_ensemble_xgb_lgbm_cat" if self.cat else "stacked_ensemble_xgb_lgbm"
 
             return {
                 "predicted_demand": round(pred, 1),
                 "confidence_score": round(confidence, 3),
-                "method": "stacked_ensemble_xgb_lgbm"
+                "method": method
             }
         except Exception as e:
             log.error("ensemble_predict_failed", error=str(e))
@@ -319,23 +332,41 @@ def train_ensemble() -> dict:
     xgb.fit(X_train_sc, y_train)
     lgbm.fit(X_train_sc, y_train)
 
+    # CatBoost as 3rd base learner
+    cat = None
+    try:
+        from catboost import CatBoostRegressor
+        cat = CatBoostRegressor(iterations=300, depth=7, learning_rate=0.05,
+                                loss_function='RMSE', random_seed=42, verbose=0)
+        cat.fit(X_train_sc, y_train)
+        log.info("catboost_trained")
+    except Exception as e:
+        log.warning("catboost_skipped", error=str(e))
+
     # Meta-learner on calibration set
-    p_xgb_calib = xgb.predict(X_calib_sc)
+    p_xgb_calib  = xgb.predict(X_calib_sc)
     p_lgbm_calib = lgbm.predict(X_calib_sc)
-    meta_X = np.column_stack([p_xgb_calib, p_lgbm_calib])
+    if cat is not None:
+        try:
+            p_cat_calib = cat.predict(X_calib_sc)
+            meta_X = np.column_stack([p_xgb_calib, p_lgbm_calib, p_cat_calib])
+        except Exception:
+            meta_X = np.column_stack([p_xgb_calib, p_lgbm_calib])
+    else:
+        meta_X = np.column_stack([p_xgb_calib, p_lgbm_calib])
     meta = Ridge(alpha=1.0)
     meta.fit(meta_X, y_calib)
 
     # Evaluate
     y_pred = meta.predict(meta_X)
-    mae = float(mean_absolute_error(y_calib, y_pred))
-    r2 = float(r2_score(y_calib, y_pred))
+    mae  = float(mean_absolute_error(y_calib, y_pred))
+    r2   = float(r2_score(y_calib, y_pred))
     mape = float(mean_absolute_percentage_error(y_calib, np.maximum(y_pred, 0.1))) * 100
 
     # Save ensemble
     Path("./models").mkdir(exist_ok=True)
     joblib.dump({
-        "xgb": xgb, "lgbm": lgbm, "meta": meta,
+        "xgb": xgb, "lgbm": lgbm, "cat": cat, "meta": meta,
         "imputer": imputer, "scaler": scaler
     }, ENSEMBLE_PATH)
     log.info("ensemble_saved", mae=mae, r2=r2, mape=mape)
