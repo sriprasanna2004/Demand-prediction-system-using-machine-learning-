@@ -69,3 +69,16 @@
   transition: width 0.4s ease;
 }
 .riskLabel { font-size: 11px; font-weight: 700; color: var(--muted); width: 28px; }
+
+.searchInput {
+  padding: 8px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--text); font-size: 13px; font-family: inherit; outline: none; width: 160px;
+}
+.searchInput:focus { border-color: rgba(99,102,241,0.4); }
+.filterSelect {
+  padding: 8px 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  color: var(--text); font-size: 12px; font-family: inherit; outline: none;
+}
+.filterSelect option { background: #0d1220; }

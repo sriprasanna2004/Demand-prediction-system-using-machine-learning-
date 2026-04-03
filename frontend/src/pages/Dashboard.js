@@ -115,6 +115,29 @@ export default function Dashboard() {
       {/* Bottom row */}
       <motion.div className={styles.bottomRow} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3 }}>
 
+        {/* Business metrics mini row */}
+        <div className={styles.card} style={{ gridColumn: 'span 3' }}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>Business Metrics</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+            {[
+              { label: '30d Profit',      value: `$${(bm.profit30Days || 0).toLocaleString()}`,    color: '#10b981' },
+              { label: 'Stock Value',     value: `$${(bm.totalStockValue || 0).toLocaleString()}`, color: '#6366f1' },
+              { label: 'Idle Stock Cost', value: `$${(bm.idleStockCost || 0).toLocaleString()}`,  color: '#f59e0b' },
+              { label: 'Efficiency',      value: `${bm.efficiencyScore || 0}%`,                   color: bm.efficiencyScore > 70 ? '#10b981' : '#f59e0b' },
+            ].map(m => (
+              <div key={m.label} style={{
+                padding: '12px 14px', borderRadius: 12,
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+              }}>
+                <div style={{ fontSize: 20, fontWeight: 800, color: m.color, letterSpacing: '-.02em' }}>{m.value}</div>
+                <div style={{ fontSize: 10.5, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: 3 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* AI Insights */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>

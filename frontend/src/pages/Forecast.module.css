@@ -85,3 +85,22 @@
   flex-direction: column; align-items: center; gap: 12px;
 }
 .emptyIcon { font-size: 48px; }
+
+.btnExport {
+  padding: 8px 14px; border-radius: 10px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text2); font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .2s;
+}
+.btnExport:hover { border-color: rgba(99,102,241,0.4); color: var(--accent); }
+
+.statRow {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.statBox {
+  flex: 1; min-width: 120px; padding: 14px 16px; border-radius: 14px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.statVal   { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -.02em; }
+.statLabel { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
