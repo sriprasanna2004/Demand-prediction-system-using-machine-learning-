@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-
-const exportVizPDF = async (...args) => {
-  const { exportDataVizPDF } = await import('../utils/exportPDF');
-  exportVizPDF(...args);
-};
 import {
   LineChart, Line, BarChart, Bar, AreaChart, Area,
   PieChart, Pie, Cell, RadarChart, Radar,
@@ -124,14 +119,6 @@ export default function DataViz() {
           <div className={styles.dsInfo}>
             <span>Columns: {currentDs.columns?.join(', ')}</span>
           </div>
-        )}
-        {!noDatasets && !noData && (
-          <button onClick={() => exportVizPDF(overview, topProds, byCategory, monthly)}
-            style={{
-              marginLeft: 'auto', padding: '7px 16px', borderRadius: 10,
-              background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)',
-              color: '#6ee7b7', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-            }}>⬇ Export PDF</button>
         )}
       </div>
 
@@ -397,4 +384,3 @@ export default function DataViz() {
     </div>
   );
 }
-

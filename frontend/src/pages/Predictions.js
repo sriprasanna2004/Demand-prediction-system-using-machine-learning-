@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+﻿import { useState, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
@@ -6,13 +6,7 @@ import { productsApi, predictApi, forecastApi } from "../api/client";
 import { useRetrain } from "../hooks/useRetrain";
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import DataQualityBadge from "../components/DataQualityBadge";
-import FeedbackModal from "../components/FeedbackModal";
 import styles from "./Predictions.module.css";
-
-const exportPredPDF = async (...args) => {
-  const { exportPredictionsPDF } = await import('../utils/exportPDF');
-  exportPredPDF(...args);
-};
 
 const stockColor = { UNDERSTOCK: "var(--danger)", OVERSTOCK: "var(--warning)", OPTIMAL: "var(--success)" };
 
@@ -39,7 +33,6 @@ export default function Predictions() {
   const [explanation, setExplanation] = useState(null);
   const [whatIfPrice, setWhatIfPrice] = useState(null);
   const [whatIfResult, setWhatIfResult] = useState(null);
-  const [feedbackRow, setFeedbackRow] = useState(null);
   const retrain = useRetrain();
 
   const { data: products } = useQuery({
@@ -110,7 +103,7 @@ export default function Predictions() {
           <p className={styles.subtitle}>ML-powered demand forecasting with conformal prediction intervals</p>
         </div>
         <button className={styles.retrainBtn} onClick={() => retrain.mutate()} disabled={retrain.isPending}>
-          {retrain.isPending ? "Retraining..." : "?? Retrain Model"}
+          {retrain.isPending ? "Retraining..." : "🔄 Retrain Model"}
         </button>
       </div>
 
@@ -125,7 +118,7 @@ export default function Predictions() {
                 onChange={e => setForm({ ...form, productId: e.target.value })} required>
                 <option value="">Select a product</option>
                 {products?.map(p => (
-                  <option key={p._id} value={p._id}>{p.name} ({p.category}) � ${p.price}</option>
+                  <option key={p._id} value={p._id}>{p.name} ({p.category}) — ${p.price}</option>
                 ))}
               </select>
             </div>
@@ -145,10 +138,10 @@ export default function Predictions() {
             </div>
             <label className={styles.explainToggle}>
               <input type="checkbox" checked={explainMode} onChange={e => setExplainMode(e.target.checked)} />
-              <span>?? Include AI Explanation</span>
+              <span>🧠 Include AI Explanation</span>
             </label>
             <button className={styles.btnPrimary} type="submit" disabled={predictMutation.isPending}>
-              {predictMutation.isPending ? "Predicting..." : "? Run Prediction"}
+              {predictMutation.isPending ? "Predicting..." : "▶ Run Prediction"}
             </button>
           </form>
           {predictMutation.isError && (
@@ -160,7 +153,7 @@ export default function Predictions() {
             <motion.div className={styles.whatIfPanel}
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <div className={styles.whatIfHeader}>
-                <span className={styles.whatIfTitle}>?? What-If Price Simulator</span>
+                <span className={styles.whatIfTitle}>💡 What-If Price Simulator</span>
                 <span className={styles.whatIfPrice}>${whatIfPrice}</span>
               </div>
               <input type="range" className={styles.slider}
@@ -180,7 +173,7 @@ export default function Predictions() {
                 <div className={styles.whatIfResult}>
                   <span>Predicted: <strong>{whatIfResult.predictedDemand} units</strong></span>
                   <span style={{ color: demandDelta >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 700 }}>
-                    {demandDelta >= 0 ? '?' : '?'} {Math.abs(demandDelta).toFixed(1)} units
+                    {demandDelta >= 0 ? '↑' : '↓'} {Math.abs(demandDelta).toFixed(1)} units
                   </span>
                 </div>
               )}
@@ -208,7 +201,7 @@ export default function Predictions() {
                       {result.coverage ? `${(result.coverage * 100).toFixed(0)}% CI` : '90% CI'}
                     </span>
                     <span className={styles.intervalRange}>
-                      {result.lower_bound} � {result.upper_bound} units
+                      {result.lower_bound} – {result.upper_bound} units
                     </span>
                     <span className={styles.intervalMethod}>{result.method}</span>
                   </div>
@@ -235,11 +228,11 @@ export default function Predictions() {
                   <DataQualityBadge score={result.features?.dataQuality} dataPoints={result.features?.dataPoints} />
                 </div>
                 {result.fallback && (
-                  <div className={styles.fallbackBanner}>?? Prediction based on trend analysis (ML fallback).</div>
+                  <div className={styles.fallbackBanner}>⚠️ Prediction based on trend analysis (ML fallback).</div>
                 )}
                 {explainMode && explanation?.explanation && (
                   <motion.div className={styles.explanationSection} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className={styles.explainTitle}>?? Why this prediction?</div>
+                    <div className={styles.explainTitle}>🧠 Why this prediction?</div>
                     {explanation.explanation.explanation?.map((line, i) => (
                       <motion.p key={i} className={styles.explainLine}
                         initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
@@ -250,7 +243,7 @@ export default function Predictions() {
               </motion.div>
             ) : (
               <motion.div className={styles.emptyResult} key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <span className={styles.emptyIcon}>??</span>
+                <span className={styles.emptyIcon}>🤖</span>
                 <p>Select a product and run a prediction to see results here.</p>
               </motion.div>
             )}
@@ -261,10 +254,10 @@ export default function Predictions() {
       {/* Batch table */}
       <div className={styles.card}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <h2 className={styles.cardTitle} style={{ margin: 0 }}>Batch Forecast � All Products</h2>
+          <h2 className={styles.cardTitle} style={{ margin: 0 }}>Batch Forecast — All Products</h2>
           <button className={styles.retrainBtn} onClick={() => exportCSV(batchData)}
             disabled={!batchData?.length} style={{ fontSize: 12, padding: '7px 14px' }}>
-            ? Export CSV
+            ⬇ Export CSV
           </button>
         </div>
         {batchLoading ? (
@@ -272,7 +265,7 @@ export default function Predictions() {
         ) : (
           <table className={styles.table}>
             <thead>
-              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th><th>Feedback</th></tr>
+              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th></tr>
             </thead>
             <tbody>
               {batchData?.map((row, i) => (
@@ -283,8 +276,8 @@ export default function Predictions() {
                   <td className={styles.demandCell}>{row.predicted_demand} units</td>
                   <td>
                     {row.lower_bound != null
-                      ? <span className={styles.intervalSmall}>{row.lower_bound}�{row.upper_bound}</span>
-                      : <span className={styles.muted}>�</span>}
+                      ? <span className={styles.intervalSmall}>{row.lower_bound}–{row.upper_bound}</span>
+                      : <span className={styles.muted}>—</span>}
                   </td>
                   <td>
                     <span className={styles.confBadge}
@@ -293,25 +286,12 @@ export default function Predictions() {
                     </span>
                   </td>
                   <td className={styles.muted}>{row.method || "random_forest"}</td>
-                  <td>
-                    <button onClick={() => setFeedbackRow(row)}
-                      style={{
-                        padding: '3px 10px', borderRadius: 8, border: '1px solid rgba(16,185,129,0.3)',
-                        background: 'rgba(16,185,129,0.08)', color: '#6ee7b7',
-                        fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                      }}>+ Actual</button>
-                  </td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
-
-      {feedbackRow && (
-        <FeedbackModal prediction={feedbackRow} onClose={() => setFeedbackRow(null)} />
-      )}
     </div>
   );
 }
-
