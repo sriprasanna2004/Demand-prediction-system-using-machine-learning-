@@ -1,4 +1,4 @@
-.page { display: flex; flex-direction: column; gap: 24px; }
+﻿.page { display: flex; flex-direction: column; gap: 24px; }
 
 .title    { font-size: 22px; font-weight: 800; letter-spacing: -.03em; color: var(--text); }
 .subtitle { font-size: 13px; color: var(--muted); margin-top: 4px; }
@@ -7,18 +7,18 @@
 .selectorRow {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 18px; border-radius: var(--radius);
-  background: rgba(99,102,241,0.06);
-  border: 1px solid rgba(99,102,241,0.18);
+  background: rgba(194,65,12,0.06);
+  border: 1px solid rgba(194,65,12,0.18);
 }
-.selectorLabel { font-size: 12px; font-weight: 600; color: #a5b4fc; white-space: nowrap; }
+.selectorLabel { font-size: 12px; font-weight: 600; color: #fb923c; white-space: nowrap; }
 .dsSelect {
   flex: 1; max-width: 420px;
   padding: 8px 12px; border-radius: 10px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(99,102,241,0.25);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(194,65,12,0.25);
   color: var(--text); font-size: 13px; font-family: inherit; outline: none;
   cursor: pointer;
 }
-.dsSelect:focus { border-color: rgba(99,102,241,0.5); box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.dsSelect:focus { border-color: rgba(194,65,12,0.5); box-shadow: 0 0 0 3px rgba(194,65,12,0.1); }
 .dsSelect option { background: #0d1220; }
 .dsCount { font-size: 11px; color: var(--muted); margin-left: auto; }
 .dsInfo  { font-size: 11px; color: var(--muted); margin-left: 12px; max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -40,7 +40,7 @@
   border: 1px solid var(--border);
   transition: transform .2s, border-color .2s;
 }
-.statPill:hover { transform: translateY(-2px); border-color: rgba(99,102,241,0.2); }
+.statPill:hover { transform: translateY(-2px); border-color: rgba(194,65,12,0.2); }
 .statPillIcon {
   width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center; font-size: 16px;
@@ -63,7 +63,7 @@
   padding: 20px 22px;
   transition: border-color .2s;
 }
-.vizCard:hover { border-color: rgba(99,102,241,0.15); }
+.vizCard:hover { border-color: rgba(194,65,12,0.15); }
 .vizCard[data-span="2"] { grid-column: span 2; }
 @media (max-width: 900px) { .vizCard[data-span="2"] { grid-column: span 1; } }
 
@@ -74,8 +74,8 @@
 .vizCardTitle { font-size: 13.5px; font-weight: 700; color: var(--text); }
 .vizBadge {
   font-size: 10.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
-  background: rgba(99,102,241,0.1); color: #a5b4fc;
-  border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(194,65,12,0.1); color: #fb923c;
+  border: 1px solid rgba(194,65,12,0.2);
 }
 
 /* Stock health table */
@@ -133,4 +133,5 @@
 .emptyIcon { font-size: 56px; }
 .emptyState h2 { font-size: 20px; font-weight: 700; color: var(--text); }
 .emptyState p  { font-size: 14px; color: var(--muted); max-width: 400px; line-height: 1.6; }
-.emptyState strong { color: var(--accent); }
+.emptyState strong { color: #c2410c; }
+

@@ -1,4 +1,4 @@
-.card {
+﻿.card {
   position: relative;
   background: rgba(255,255,255,0.03);
   backdrop-filter: blur(20px);
@@ -25,17 +25,17 @@
   top: -60px; right: -60px;
   width: 120px; height: 120px;
   border-radius: 50%;
-  background: var(--card-glow, rgba(99,102,241,0.08));
+  background: var(--card-glow, rgba(194,65,12,0.08));
   filter: blur(30px);
   transition: all 0.3s;
 }
 
 .card:hover {
-  border-color: rgba(99,102,241,0.3);
+  border-color: rgba(194,65,12,0.3);
   transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 30px rgba(99,102,241,0.1);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 30px rgba(194,65,12,0.1);
 }
-.card:hover::after { background: var(--card-glow, rgba(99,102,241,0.15)); }
+.card:hover::after { background: var(--card-glow, rgba(194,65,12,0.15)); }
 
 .card[data-danger="true"] {
   border-color: rgba(239,68,68,0.25);
@@ -97,8 +97,9 @@
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background: linear-gradient(90deg, transparent, #c2410c, transparent);
   opacity: 0;
   transition: opacity 0.3s;
 }
 .card:hover::before { opacity: 0.6; }
+

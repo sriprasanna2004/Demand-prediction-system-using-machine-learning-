@@ -6,7 +6,7 @@
 .grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
 
 .formCard, .tableCard {
-  background: var(--surface);
+  background: rgba(255,255,255,0.025);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
@@ -15,7 +15,7 @@
 .form { display: flex; flex-direction: column; gap: 12px; }
 
 .input {
-  background: var(--surface2);
+  background: rgba(255,255,255,0.045);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
@@ -25,7 +25,7 @@
   outline: none;
   transition: border-color 0.15s;
 }
-.input:focus { border-color: var(--accent); }
+.input:focus { border-color: #c2410c; }
 
 .btnRow { display: flex; gap: 8px; }
 
@@ -41,7 +41,7 @@
 .btnPrimary:disabled { opacity: 0.5; }
 
 .btnSecondary {
-  background: var(--surface2);
+  background: rgba(255,255,255,0.045);
   color: var(--text);
   border: 1px solid var(--border);
   padding: 10px 16px;
@@ -50,7 +50,7 @@
 }
 
 .btnAccent {
-  background: var(--accent2);
+  background: #9a3412;
   color: #000;
   border: none;
   padding: 8px 16px;
@@ -69,18 +69,18 @@
 .lowStockRow { background: rgba(239,68,68,0.05); }
 
 .catBadge {
-  background: var(--surface2);
+  background: rgba(255,255,255,0.045);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 11px;
-  color: var(--accent2);
+  color: #9a3412;
 }
 
 .stockDanger { color: var(--danger); font-weight: 700; }
 .stockOk { color: var(--success); }
 
 .actions { display: flex; gap: 6px; }
-.btnEdit { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+.btnEdit { background: rgba(255,255,255,0.045); border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 6px; font-size: 12px; }
 .btnDel { background: rgba(239,68,68,0.15); border: 1px solid var(--danger); color: var(--danger); padding: 4px 10px; border-radius: 6px; font-size: 12px; }
 
 .overlay {
@@ -91,7 +91,7 @@
 }
 
 .modal {
-  background: var(--surface);
+  background: rgba(255,255,255,0.025);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 28px;
@@ -109,12 +109,13 @@
   background: rgba(255,255,255,0.04); border: 1px solid var(--border);
   color: var(--text); font-size: 13px; font-family: inherit; outline: none;
 }
-.searchInput:focus { border-color: rgba(99,102,241,0.4); }
+.searchInput:focus { border-color: rgba(194,65,12,0.4); }
 .filterSelect {
   padding: 9px 12px; border-radius: 10px;
   background: rgba(255,255,255,0.04); border: 1px solid var(--border);
   color: var(--text); font-size: 13px; font-family: inherit; outline: none;
 }
 .filterSelect option { background: #0d1220; }
+
 
 

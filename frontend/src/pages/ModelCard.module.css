@@ -6,9 +6,9 @@
 .muted { color: var(--muted); font-size: 13px; }
 
 .infoBox {
-  padding: 12px 16px; background: rgba(99,102,241,0.08);
-  border: 1px solid rgba(99,102,241,0.2); border-radius: 10px;
-  font-size: 13px; color: #a5b4fc;
+  padding: 12px 16px; background: rgba(194,65,12,0.08);
+  border: 1px solid rgba(194,65,12,0.2); border-radius: 10px;
+  font-size: 13px; color: #fb923c;
 }
 
 .card {
@@ -25,7 +25,7 @@
   display: flex; align-items: center; gap: 8px;
 }
 .cardTitle::before { content: ''; width: 3px; height: 14px;
-  background: linear-gradient(180deg, var(--accent), var(--accent2)); border-radius: 2px; }
+  background: linear-gradient(180deg, #c2410c, #9a3412); border-radius: 2px; }
 
 /* Overall metrics grid */
 .metricsGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
@@ -77,7 +77,7 @@
   border: 1px solid rgba(255,255,255,0.04); font-size: 12px;
 }
 .runId { font-family: monospace; color: var(--muted); font-size: 11px; }
-.runCat { color: #a5b4fc; font-weight: 600; }
+.runCat { color: #fb923c; font-weight: 600; }
 .runMetric { color: var(--text2); }
 .runTime { color: var(--muted); text-align: right; }
 
@@ -86,4 +86,5 @@
   .tierGrid { grid-template-columns: 1fr; }
   .runRow { grid-template-columns: 1fr 1fr; }
 }
+
 

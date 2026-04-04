@@ -18,7 +18,7 @@
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, rgba(194,65,12,0.3), transparent);
 }
-.card:hover { border-color: rgba(99,102,241,0.18); }
+.card:hover { border-color: rgba(194,65,12,0.18); }
 
 .cardTitle {
   font-size: 11px; font-weight: 700; color: var(--muted);
@@ -28,7 +28,7 @@
 .cardTitle::before {
   content: '';
   width: 3px; height: 14px;
-  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  background: linear-gradient(180deg, #c2410c, #9a3412);
   border-radius: 2px; flex-shrink: 0;
 }
 
@@ -40,7 +40,7 @@
 }
 .input:focus {
   border-color: rgba(194,65,12,0.5);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+  box-shadow: 0 0 0 3px rgba(194,65,12,0.1);
 }
 
 .btnPrimary {
@@ -68,7 +68,7 @@
   font-size: 13px; font-weight: 600; cursor: pointer;
   transition: all .2s;
 }
-.retrainBtn:hover { border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
+.retrainBtn:hover { border-color: rgba(194,65,12,0.4); color: #fb923c; }
 .retrainBtn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .errorBox {
@@ -79,7 +79,7 @@
 
 .resultPanel { display: flex; flex-direction: column; gap: 16px; }
 
-.productName { font-size: 16px; font-weight: 600; color: var(--accent2); }
+.productName { font-size: 16px; font-weight: 600; color: #9a3412; }
 
 .bigNumber { font-size: 42px; font-weight: 800; color: var(--text); line-height: 1; }
 .bigUnit { font-size: 16px; font-weight: 400; color: var(--muted); }
@@ -87,7 +87,7 @@
 .metaGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
 .metaItem {
-  background: var(--surface2); border-radius: 8px; padding: 12px;
+  background: rgba(255,255,255,0.045); border-radius: 8px; padding: 12px;
   display: flex; flex-direction: column; gap: 4px;
 }
 .metaLabel { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
@@ -95,10 +95,10 @@
 
 .dataQuality { display: flex; align-items: center; gap: 10px; }
 .qualityBar {
-  flex: 1; height: 6px; background: var(--surface2);
+  flex: 1; height: 6px; background: rgba(255,255,255,0.045);
   border-radius: 3px; overflow: hidden;
 }
-.qualityFill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s; }
+.qualityFill { height: 100%; background: #c2410c; border-radius: 3px; transition: width 0.4s; }
 .qualityPct { font-size: 12px; color: var(--muted); width: 32px; text-align: right; }
 
 .fallbackBanner {
@@ -139,42 +139,42 @@
 .pageHeader { display: flex; justify-content: space-between; align-items: flex-start; }
 
 .retrainBtn {
-  background: var(--surface2); border: 1px solid var(--border);
+  background: rgba(255,255,255,0.045); border: 1px solid var(--border);
   color: var(--text); padding: 10px 18px; border-radius: 8px;
   font-size: 13px; font-weight: 600; cursor: pointer;
   transition: border-color 0.15s;
 }
-.retrainBtn:hover { border-color: var(--accent); color: var(--accent); }
+.retrainBtn:hover { border-color: #c2410c; color: #c2410c; }
 .retrainBtn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .explainToggle {
   display: flex; align-items: center; gap: 8px;
   font-size: 13px; cursor: pointer; color: var(--text);
-  padding: 8px 12px; background: var(--surface2);
+  padding: 8px 12px; background: rgba(255,255,255,0.045);
   border-radius: 8px; border: 1px solid var(--border);
 }
-.explainToggle input { accent-color: var(--accent); }
+.explainToggle input { accent-color: #c2410c; }
 
 .explanationSection {
   display: flex; flex-direction: column; gap: 8px;
-  padding: 14px; background: var(--surface2);
+  padding: 14px; background: rgba(255,255,255,0.045);
   border-radius: 10px; border: 1px solid var(--border);
 }
-.explainTitle { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.explainTitle { font-size: 13px; font-weight: 600; color: #c2410c; margin-bottom: 4px; }
 .explainLine {
   font-size: 12px; color: var(--muted); line-height: 1.5;
-  padding: 6px 10px; background: var(--surface);
-  border-radius: 6px; border-left: 2px solid var(--accent);
+  padding: 6px 10px; background: rgba(255,255,255,0.025);
+  border-radius: 6px; border-left: 2px solid #c2410c;
 }
 
 /* Conformal prediction interval */
 .intervalRow {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 8px 12px; border-radius: 8px;
-  background: rgba(99,102,241,0.07); border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(194,65,12,0.07); border: 1px solid rgba(194,65,12,0.2);
 }
 .intervalLabel {
-  font-size: 11px; font-weight: 700; color: #a5b4fc;
+  font-size: 11px; font-weight: 700; color: #fb923c;
   text-transform: uppercase; letter-spacing: 0.06em;
 }
 .intervalRange { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
@@ -184,15 +184,15 @@
 /* What-If panel */
 .whatIfPanel {
   margin-top: 20px; padding: 16px 18px; border-radius: 14px;
-  background: rgba(99,102,241,0.06);
-  border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(194,65,12,0.06);
+  border: 1px solid rgba(194,65,12,0.2);
   display: flex; flex-direction: column; gap: 10px;
 }
 .whatIfHeader { display: flex; align-items: center; justify-content: space-between; }
-.whatIfTitle  { font-size: 12.5px; font-weight: 700; color: #a5b4fc; }
-.whatIfPrice  { font-size: 18px; font-weight: 800; color: var(--accent); }
+.whatIfTitle  { font-size: 12.5px; font-weight: 700; color: #fb923c; }
+.whatIfPrice  { font-size: 18px; font-weight: 800; color: #c2410c; }
 .slider {
-  width: 100%; accent-color: var(--accent); cursor: pointer;
+  width: 100%; accent-color: #c2410c; cursor: pointer;
   height: 4px; border-radius: 2px;
 }
 .sliderLabels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--muted); }
@@ -207,19 +207,20 @@
 .field { display: flex; flex-direction: column; gap: 6px; }
 .label { font-size: 12px; color: var(--muted); font-weight: 500; }
 .explainToggle { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: var(--text); padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); }
-.explainToggle input { accent-color: var(--accent); }
+.explainToggle input { accent-color: #c2410c; }
 .resultPanel { display: flex; flex-direction: column; gap: 16px; }
-.productName { font-size: 15px; font-weight: 700; color: #a5b4fc; }
+.productName { font-size: 15px; font-weight: 700; color: #fb923c; }
 .bigNumber { font-size: 42px; font-weight: 800; color: var(--text); line-height: 1; }
 .bigUnit { font-size: 16px; font-weight: 400; color: var(--muted); }
 .metaGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .metaLabel { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 .metaValue { font-size: 18px; font-weight: 700; color: var(--text); }
 .qualityRow { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
-.explanationSection { display: flex; flex-direction: column; gap: 8px; padding: 14px; background: rgba(99,102,241,0.06); border-radius: 12px; border: 1px solid rgba(99,102,241,0.2); }
-.explainTitle { font-size: 13px; font-weight: 700; color: #a5b4fc; margin-bottom: 4px; }
-.explainLine { font-size: 12px; color: var(--text2); line-height: 1.5; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); }
+.explanationSection { display: flex; flex-direction: column; gap: 8px; padding: 14px; background: rgba(194,65,12,0.06); border-radius: 12px; border: 1px solid rgba(194,65,12,0.2); }
+.explainTitle { font-size: 13px; font-weight: 700; color: #fb923c; margin-bottom: 4px; }
+.explainLine { font-size: 12px; color: var(--text2); line-height: 1.5; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid #c2410c; }
 .emptyResult { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 200px; color: var(--muted); }
 .emptyIcon { font-size: 40px; }
+
 
 

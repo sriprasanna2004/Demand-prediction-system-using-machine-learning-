@@ -10,13 +10,13 @@
   border: 2px dashed rgba(194,65,12,0.3);
   border-radius: 20px; padding: 48px;
   text-align: center; cursor: pointer;
-  background: rgba(99,102,241,0.03);
+  background: rgba(194,65,12,0.03);
   transition: all 0.2s;
   display: flex; flex-direction: column; align-items: center; gap: 10px;
 }
 .uploadZone:hover, .uploadZone[data-dragover="true"] {
-  border-color: var(--accent);
-  background: rgba(99,102,241,0.08);
+  border-color: #c2410c;
+  background: rgba(194,65,12,0.08);
   transform: scale(1.01);
 }
 .uploadIcon { font-size: 48px; animation: float 3s ease-in-out infinite; }
@@ -24,8 +24,8 @@
 .uploadHint { font-size: 12px; color: var(--muted); }
 .uploadSpinner {
   width: 40px; height: 40px;
-  border: 3px solid rgba(99,102,241,0.2);
-  border-top-color: var(--accent);
+  border: 3px solid rgba(194,65,12,0.2);
+  border-top-color: #c2410c;
   border-radius: 50%; animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -38,7 +38,7 @@
 .sampleTitle { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
 .sampleCode {
   background: rgba(0,0,0,0.3); border-radius: 10px; padding: 14px;
-  font-size: 12px; color: #a5b4fc; font-family: 'Fira Code', monospace;
+  font-size: 12px; color: #fb923c; font-family: 'Fira Code', monospace;
   overflow-x: auto; line-height: 1.6;
 }
 .sampleNote { font-size: 12px; color: var(--muted); margin-top: 10px; }
@@ -54,7 +54,7 @@
 .mappingMeta { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .progressBadge {
   padding: 6px 14px; border-radius: 20px;
-  background: rgba(99,102,241,0.15); color: var(--accent);
+  background: rgba(194,65,12,0.15); color: #c2410c;
   font-size: 12px; font-weight: 700;
   border: 1px solid rgba(194,65,12,0.3);
 }
@@ -69,13 +69,13 @@
 .mappingGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .mappingRow { display: flex; flex-direction: column; gap: 6px; }
 .fieldLabel { font-size: 12px; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 6px; }
-.required { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(99,102,241,0.15); color: var(--accent); }
+.required { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: rgba(194,65,12,0.15); color: #c2410c; }
 .mappingSelect {
   background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
   color: var(--text); padding: 8px 12px; border-radius: 8px; font-size: 13px;
   transition: border-color 0.15s;
 }
-.mappingSelect:focus { border-color: var(--accent); outline: none; }
+.mappingSelect:focus { border-color: #c2410c; outline: none; }
 
 .mappingActions { display: flex; gap: 12px; justify-content: flex-end; }
 
@@ -92,7 +92,7 @@
   border: 1px solid rgba(255,255,255,0.1); color: var(--text2);
   border-radius: 10px; font-size: 13px; cursor: pointer; transition: all 0.15s;
 }
-.btnSecondary:hover { border-color: var(--accent); color: var(--accent); }
+.btnSecondary:hover { border-color: #c2410c; color: #c2410c; }
 .btnTrain {
   padding: 8px 18px; background: rgba(16,185,129,0.15);
   border: 1px solid rgba(16,185,129,0.3); color: var(--success);
@@ -135,7 +135,7 @@
   background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
   transition: all 0.2s;
 }
-.datasetItem:hover { border-color: rgba(99,102,241,0.2); }
+.datasetItem:hover { border-color: rgba(194,65,12,0.2); }
 .dsIcon { font-size: 24px; flex-shrink: 0; }
 .dsInfo { flex: 1; min-width: 0; }
 .dsName { font-size: 14px; font-weight: 600; color: var(--text2); }
@@ -148,5 +148,6 @@
   .mappingGrid { grid-template-columns: 1fr; }
   .uploadZone { padding: 32px 20px; }
 }
+
 
 

@@ -21,10 +21,10 @@
 .card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(194,65,12,0.4), transparent);
 }
 .card:hover {
-  border-color: rgba(99,102,241,0.2);
+  border-color: rgba(194,65,12,0.2);
   box-shadow: 0 8px 40px rgba(0,0,0,0.3);
 }
 
@@ -36,7 +36,7 @@
 .cardTitle::before {
   content: '';
   width: 3px; height: 14px;
-  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  background: linear-gradient(180deg, #c2410c, #9a3412);
   border-radius: 2px; flex-shrink: 0;
 }
 
@@ -55,7 +55,7 @@
 }
 .select:focus {
   border-color: rgba(194,65,12,0.5);
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+  box-shadow: 0 0 0 3px rgba(194,65,12,0.1);
 }
 .select option { background: #0d1220; color: var(--text); }
 
@@ -88,9 +88,9 @@
 
 .reorderQty {
   padding: 10px 14px;
-  background: rgba(99,102,241,0.08);
+  background: rgba(194,65,12,0.08);
   border-radius: 10px; font-size: 13px;
-  border-left: 3px solid #6366f1;
+  border-left: 3px solid #c2410c;
   color: var(--text2);
 }
 
@@ -103,7 +103,7 @@
 }
 .reasonDot {
   width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent); margin-top: 5px; flex-shrink: 0;
+  background: #c2410c; margin-top: 5px; flex-shrink: 0;
 }
 
 .probGrid { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
@@ -128,13 +128,13 @@
 }
 .scenarioBtn:hover {
   border-color: rgba(194,65,12,0.35);
-  background: rgba(99,102,241,0.06);
+  background: rgba(194,65,12,0.06);
   transform: translateY(-1px);
 }
 .scenarioBtn[data-active="true"] {
-  border-color: rgba(99,102,241,0.4);
-  background: rgba(99,102,241,0.1);
-  box-shadow: 0 4px 16px rgba(99,102,241,0.15);
+  border-color: rgba(194,65,12,0.4);
+  background: rgba(194,65,12,0.1);
+  box-shadow: 0 4px 16px rgba(194,65,12,0.15);
 }
 .scenarioLabel { font-size: 13px; font-weight: 700; color: var(--text); }
 .scenarioDesc { font-size: 11px; color: var(--muted); }
@@ -142,8 +142,8 @@
 /* Scenario result */
 .scenarioResult {
   padding: 16px; border-radius: 14px;
-  background: rgba(99,102,241,0.06);
-  border: 1px solid rgba(99,102,241,0.2);
+  background: rgba(194,65,12,0.06);
+  border: 1px solid rgba(194,65,12,0.2);
   display: flex; flex-direction: column; gap: 12px;
 }
 .scenarioResultHeader {
@@ -152,7 +152,7 @@
 }
 .multiplierBadge {
   padding: 3px 10px; border-radius: 20px;
-  background: rgba(99,102,241,0.2); color: #a5b4fc;
+  background: rgba(194,65,12,0.2); color: #fb923c;
   font-size: 11px; font-weight: 700;
   border: 1px solid rgba(194,65,12,0.3);
 }
@@ -160,7 +160,7 @@
 .demandItem { display: flex; flex-direction: column; gap: 3px; }
 .demandLabel { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .demandArrow { color: var(--muted); font-size: 20px; }
-.demandHighlight { font-size: 22px; font-weight: 800; color: #6366f1; letter-spacing: -.02em; }
+.demandHighlight { font-size: 22px; font-weight: 800; color: #c2410c; letter-spacing: -.02em; }
 
 /* Fleet table */
 .table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -216,5 +216,6 @@
   .topGrid { grid-template-columns: 1fr; }
   .scenarioGrid { grid-template-columns: 1fr; }
 }
+
 
 
