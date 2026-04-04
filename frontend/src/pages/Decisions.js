@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -66,7 +66,7 @@ export default function Decisions() {
           </select>
           <button className={styles.btnPrimary} onClick={() => decideMutation.mutate()}
             disabled={!productId || decideMutation.isPending}>
-            {decideMutation.isPending ? 'Analyzing...' : '🤖 Get AI Decision'}
+            {decideMutation.isPending ? 'Analyzing...' : 'Get AI Decision'}
           </button>
 
           <AnimatePresence>
@@ -203,3 +203,4 @@ export default function Decisions() {
     </div>
   );
 }
+

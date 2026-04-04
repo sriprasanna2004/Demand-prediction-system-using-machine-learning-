@@ -125,7 +125,7 @@ export default function DataViz() {
       {/* No datasets */}
       {noDatasets && (
         <motion.div className={styles.emptyState} initial={{ opacity:0 }} animate={{ opacity:1 }}>
-          <div className={styles.emptyIcon}>📊</div>
+          <div className={styles.emptyIcon}></div>
           <h2>No datasets uploaded</h2>
           <p>Go to <strong>Datasets</strong>, upload a CSV and map your columns. Your data will appear here instantly.</p>
         </motion.div>
@@ -134,7 +134,7 @@ export default function DataViz() {
       {/* Dataset selected but empty */}
       {!noDatasets && noData && (
         <motion.div className={styles.emptyState} initial={{ opacity:0 }} animate={{ opacity:1 }}>
-          <div className={styles.emptyIcon}>⚠️</div>
+          <div className={styles.emptyIcon}></div>
           <h2>No rows found for this dataset</h2>
           <p>Try re-mapping the dataset in the <strong>Datasets</strong> page.</p>
         </motion.div>
@@ -144,12 +144,12 @@ export default function DataViz() {
         <>
           {/* Stat pills */}
           <motion.div className={styles.pillRow} variants={stagger} initial="hidden" animate="show">
-            <StatPill icon="📦" label="Total Quantity"   color="#6366f1" value={overview?.totalQty?.toLocaleString()} />
-            <StatPill icon="💰" label="Total Sales"      color="#10b981" value={overview ? `$${overview.totalRevenue.toLocaleString()}` : '—'} />
-            <StatPill icon="🧾" label="Total Rows"       color="#f59e0b" value={overview?.totalRows?.toLocaleString()} />
-            <StatPill icon="🏷️" label="Unique Products"  color="#8b5cf6" value={overview?.totalProducts?.toLocaleString()} />
-            <StatPill icon="📂" label="Categories"       color="#06b6d4" value={overview?.categoryBreakdown?.length} />
-            {hasRegion && <StatPill icon="🌍" label="Regions" color="#ec4899" value={byRegion?.length} />}
+            <StatPill icon="BOX" label="Total Quantity"   color="#6366f1" value={overview?.totalQty?.toLocaleString()} />
+            <StatPill icon="$" label="Total Sales"      color="#10b981" value={overview ? `$${overview.totalRevenue.toLocaleString()}` : '—'} />
+            <StatPill icon="#" label="Total Rows"       color="#f59e0b" value={overview?.totalRows?.toLocaleString()} />
+            <StatPill icon="P" label="Unique Products"  color="#8b5cf6" value={overview?.totalProducts?.toLocaleString()} />
+            <StatPill icon="DS" label="Categories"       color="#06b6d4" value={overview?.categoryBreakdown?.length} />
+            {hasRegion && <StatPill icon="R" label="Regions" color="#ec4899" value={byRegion?.length} />}
           </motion.div>
 
           <motion.div className={styles.grid} variants={stagger} initial="hidden" animate="show">
@@ -384,4 +384,5 @@ export default function DataViz() {
     </div>
   );
 }
+
 

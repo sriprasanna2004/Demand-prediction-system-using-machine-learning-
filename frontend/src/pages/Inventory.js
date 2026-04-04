@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { productsApi, predictApi, analyticsApi } from '../api/client';
@@ -76,21 +76,21 @@ export default function Inventory() {
 
       <div className={styles.alertRow}>
         <div className={styles.alertCard} data-type="danger">
-          <div className={styles.alertIcon}>📉</div>
+          <div className={styles.alertIcon}></div>
           <div>
             <div className={styles.alertCount}>{understocked.length}</div>
             <div className={styles.alertLabel}>Understocked Products</div>
           </div>
         </div>
         <div className={styles.alertCard} data-type="warning">
-          <div className={styles.alertIcon}>📦</div>
+          <div className={styles.alertIcon}></div>
           <div>
             <div className={styles.alertCount}>{overstocked.length}</div>
             <div className={styles.alertLabel}>Overstocked Products</div>
           </div>
         </div>
         <div className={styles.alertCard} data-type="success">
-          <div className={styles.alertIcon}>✅</div>
+          <div className={styles.alertIcon}></div>
           <div>
             <div className={styles.alertCount}>
               {(products?.length || 0) - understocked.length - overstocked.length}
@@ -179,7 +179,7 @@ export default function Inventory() {
 
       {understocked.length > 0 && (
         <div className={styles.card}>
-          <h2 className={styles.cardTitle}>⚠️ Urgent Reorder Recommendations</h2>
+          <h2 className={styles.cardTitle}>Urgent Reorder Recommendations</h2>
           <div className={styles.reorderGrid}>
             {understocked.map(p => (
               <div key={p._id} className={styles.reorderCard}>
@@ -198,3 +198,4 @@ export default function Inventory() {
     </div>
   );
 }
+

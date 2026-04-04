@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -231,7 +231,7 @@ export default function Analytics() {
               <p className={styles.muted}>Simulate how price changes and market trends affect demand and revenue.</p>
               <button className={styles.btnPrimary} onClick={() => { if (productId) whatifMutation.mutate(); else toast.error('Select a product first'); }}
                 disabled={whatifMutation.isPending}>
-                {whatifMutation.isPending ? 'Simulating...' : '▶ Run All Scenarios'}
+                {whatifMutation.isPending ? 'Simulating...' : 'Run All Scenarios'}
               </button>
             </div>
             {whatif && (
@@ -298,7 +298,7 @@ export default function Analytics() {
                     ))}
                     <div className={styles.driftRec}>{drift.recommendation}</div>
                     <button className={styles.btnSecondary} onClick={() => ppoMutation.mutate()} disabled={ppoMutation.isPending} style={{ marginTop: 12 }}>
-                      {ppoMutation.isPending ? '🔄 Training PPO...' : '🧠 Retrain PPO Agent'}
+                      {ppoMutation.isPending ? 'Training PPO...' : 'Retrain PPO Agent'}
                     </button>
                   </>
                 ) : <div className={styles.loading}>Checking drift...</div>}
@@ -333,3 +333,4 @@ export default function Analytics() {
     </div>
   );
 }
+

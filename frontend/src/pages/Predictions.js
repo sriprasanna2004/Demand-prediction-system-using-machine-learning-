@@ -112,7 +112,7 @@ export default function Predictions() {
           <p className={styles.subtitle}>ML-powered demand forecasting with conformal prediction intervals</p>
         </div>
         <button className={styles.retrainBtn} onClick={() => retrain.mutate()} disabled={retrain.isPending}>
-          {retrain.isPending ? "Retraining..." : "🔄 Retrain Model"}
+          {retrain.isPending ? "Retraining..." : "Retrain Model"}
         </button>
       </div>
 
@@ -147,10 +147,10 @@ export default function Predictions() {
             </div>
             <label className={styles.explainToggle}>
               <input type="checkbox" checked={explainMode} onChange={e => setExplainMode(e.target.checked)} />
-              <span>🧠 Include AI Explanation</span>
+              <span>Include AI Explanation</span>
             </label>
             <button className={styles.btnPrimary} type="submit" disabled={predictMutation.isPending}>
-              {predictMutation.isPending ? "Predicting..." : "▶ Run Prediction"}
+              {predictMutation.isPending ? "Predicting..." : "Run Prediction"}
             </button>
           </form>
           {predictMutation.isError && (
@@ -194,7 +194,7 @@ export default function Predictions() {
                     marginLeft: 'auto', padding: '3px 10px', borderRadius: 8,
                     background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)',
                     color: '#a5b4fc', fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                  }}>💾 Save</button>
+                  }}>Save</button>
                 </div>
               )}
             </motion.div>
@@ -252,7 +252,7 @@ export default function Predictions() {
                 )}
                 {explainMode && explanation?.explanation && (
                   <motion.div className={styles.explanationSection} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <div className={styles.explainTitle}>🧠 Why this prediction?</div>
+                    <div className={styles.explainTitle}>Why this prediction?</div>
                     {explanation.explanation.explanation?.map((line, i) => (
                       <motion.p key={i} className={styles.explainLine}
                         initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
@@ -263,7 +263,7 @@ export default function Predictions() {
               </motion.div>
             ) : (
               <motion.div className={styles.emptyResult} key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <span className={styles.emptyIcon}>🤖</span>
+                <span className={styles.emptyIcon}></span>
                 <p>Select a product and run a prediction to see results here.</p>
               </motion.div>
             )}
@@ -277,7 +277,7 @@ export default function Predictions() {
           <h2 className={styles.cardTitle} style={{ margin: 0 }}>Batch Forecast — All Products</h2>
           <button className={styles.retrainBtn} onClick={() => exportCSV(batchData)}
             disabled={!batchData?.length} style={{ fontSize: 12, padding: '7px 14px' }}>
-            ⬇ Export CSV
+            Export CSV
           </button>
         </div>
         {batchLoading ? (
@@ -311,7 +311,7 @@ export default function Predictions() {
                       padding: '3px 10px', borderRadius: 8, border: '1px solid rgba(16,185,129,0.3)',
                       background: 'rgba(16,185,129,0.08)', color: '#6ee7b7',
                       fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                    }}>+ Actual</button>
+                    }}>Record Actual</button>
                   </td>
                 </motion.tr>
               ))}
@@ -326,3 +326,5 @@ export default function Predictions() {
     </div>
   );
 }
+
+

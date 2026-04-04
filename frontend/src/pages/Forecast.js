@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -100,18 +100,18 @@ export default function Forecast() {
 
         <label className={styles.explainToggle}>
           <input type="checkbox" checked={explainMode} onChange={e => setExplainMode(e.target.checked)} />
-          <span>🧠 Explain</span>
+          <span>Explain</span>
         </label>
 
         <button className={styles.btnRun} onClick={handleRun}
           disabled={!productId || forecastMutation.isPending}>
-          {forecastMutation.isPending ? 'Forecasting...' : '▶ Run Forecast'}
+          {forecastMutation.isPending ? 'Forecasting...' : 'Run Forecast'}
         </button>
 
         {forecastData && (
           <button className={styles.btnExport}
             onClick={() => exportForecastCSV(forecastData, selectedProduct?.name || 'product', horizon)}>
-            ⬇ CSV
+            Export CSV
           </button>
         )}
       </motion.div>
@@ -166,7 +166,7 @@ export default function Forecast() {
             {explainMode && explanation && (
               <motion.div className={styles.card}
                 initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-                <h2 className={styles.cardTitle}>🧠 AI Explanation</h2>
+                <h2 className={styles.cardTitle}>AI Explanation</h2>
                 <div className={styles.explanationBox}>
                   {explanation.explanation?.explanation?.map((line, i) => (
                     <motion.p key={i} className={styles.explanationLine}
@@ -201,7 +201,7 @@ export default function Forecast() {
 
       {!forecastData && !forecastMutation.isPending && (
         <motion.div className={styles.emptyState} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div className={styles.emptyIcon}>📊</div>
+          <div className={styles.emptyIcon}></div>
           <p>Select a product and run a forecast to see time-series predictions.</p>
           <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>
             Optionally add a second product to compare forecasts side by side.
@@ -211,3 +211,4 @@ export default function Forecast() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -109,7 +109,7 @@ export default function Datasets() {
       const m = res.data?.metrics;
       const note = res.data?.note;
       if (note) {
-        toast(`⚠️ ${note}`, { icon: '⚠️', duration: 6000 });
+        toast(`⚠️ ${note}`, { icon: '!', duration: 6000 });
       } else {
         toast.success(m ? `Model retrained — MAE: ${m.mae}, R²: ${m.r2}` : 'Model retrained', { duration: 4000 });
       }
@@ -278,7 +278,7 @@ export default function Datasets() {
         {step === 'done' && (
           <motion.div className={styles.successCard}
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-            <div className={styles.successIcon}>✅</div>
+            <div className={styles.successIcon}></div>
             <h2>Data Imported Successfully</h2>
             <p>Your products and sales history are now live in the system.</p>
             <p className={styles.successHint}>
@@ -290,8 +290,8 @@ export default function Datasets() {
                 onClick={() => trainMutation.mutate()}
                 disabled={trainMutation.isPending}>
                 {trainMutation.isPending
-                  ? `🔄 ${trainStage} (${trainSeconds}s)`
-                  : '🚀 Retrain AI Model Now'}
+                  ? `${trainStage} (${trainSeconds}s)`
+                  : 'Retrain Model'}
               </button>              <button className={styles.btnSecondary} onClick={() => { setStep('list'); setUploadResult(null); }}>
                 Upload Another
               </button>
@@ -310,7 +310,7 @@ export default function Datasets() {
                 <button className={styles.btnTrain}
                   onClick={() => trainMutation.mutate()}
                   disabled={trainMutation.isPending}>
-                  {trainMutation.isPending ? `🔄 ${trainStage} (${trainSeconds}s)` : '🚀 Retrain on All Data'}
+                  {trainMutation.isPending ? `${trainStage} (${trainSeconds}s)` : 'Retrain on All Data'}
                 </button>
               )}
               <button
@@ -321,7 +321,7 @@ export default function Datasets() {
                   background: 'rgba(239,68,68,0.08)', color: '#f87171',
                   fontSize: 12, fontWeight: 600, cursor: 'pointer',
                 }}>
-                {purgeMutation.isPending ? 'Cleaning...' : '🗑 Clean Up Products'}
+                {purgeMutation.isPending ? 'Cleaning...' : 'Clean Up Products'}
               </button>
             </div>
           </div>
@@ -329,7 +329,7 @@ export default function Datasets() {
           {isLoading ? <p className={styles.muted}>Loading...</p> :
            !datasets?.length ? (
             <div className={styles.emptyState}>
-              <span>📊</span>
+              
               <p>No datasets uploaded yet. Upload a CSV to get started.</p>
             </div>
           ) : (
@@ -349,7 +349,7 @@ export default function Datasets() {
                   </div>
                   <button className={styles.btnDelete}
                     onClick={() => deleteMutation.mutate(ds.dataset_id)}>
-                    🗑
+                    
                   </button>
                 </motion.div>
               ))}
@@ -360,3 +360,5 @@ export default function Datasets() {
     </div>
   );
 }
+
+

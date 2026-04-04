@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { productsApi, salesApi } from '../api/client';
@@ -162,7 +162,7 @@ export default function Products() {
       {confirmDelete && (
         <div className={styles.overlay}>
           <div className={styles.modal}>
-            <h2 className={styles.cardTitle} style={{ color: 'var(--danger)' }}>⚠️ Delete Product</h2>
+            <h2 className={styles.cardTitle} style={{ color: 'var(--danger)' }}>Delete Product</h2>
             <p style={{ color: 'var(--text2)', marginBottom: 20, fontSize: 14 }}>
               Are you sure you want to delete <strong>{confirmDelete.name}</strong>? This cannot be undone.
             </p>
@@ -181,3 +181,4 @@ export default function Products() {
     </div>
   );
 }
+

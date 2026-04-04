@@ -1,4 +1,4 @@
-import styles from './LiveFeed.module.css';
+﻿import styles from './LiveFeed.module.css';
 
 export default function LiveFeed({ sales }) {
   if (!sales.length) {
@@ -15,7 +15,7 @@ export default function LiveFeed({ sales }) {
               {s.productId?.name || 'Product'}
             </span>
             <span className={styles.meta}>
-              {s.quantity} units · {s.source === 'simulated' ? '🤖 simulated' : '👤 manual'}
+              {s.quantity} units · {s.source === 'simulated' ? ' simulated' : '👤 manual'}
             </span>
           </div>
           <span className={styles.time}>
@@ -26,3 +26,4 @@ export default function LiveFeed({ sales }) {
     </ul>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+﻿import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { poApi, suppliersApi, productsApi, analyticsApi } from '../api/client';
 
@@ -66,10 +66,10 @@ export default function SupplyChain() {
         <KpiBox label="Stockout Rate" value={kpis ? `${kpis.stockoutRate}%` : '—'} sub={`${kpis?.stockoutProducts || 0} products at 0`} color="#ef4444" icon="⚠️" />
         <KpiBox label="Inventory Turnover" value={kpis?.inventoryTurnover ?? '—'} sub="Times/year" color="#c2410c" icon="🔄" />
         <KpiBox label="Days of Supply" value={kpis ? `${kpis.daysOfSupply}d` : '—'} sub="At current demand rate" color="#f59e0b" icon="📅" />
-        <KpiBox label="Total Stock Units" value={kpis?.totalStockUnits?.toLocaleString() ?? '—'} sub="Across all products" color="#8b5cf6" icon="📦" />
+        <KpiBox label="Total Stock Units" value={kpis?.totalStockUnits?.toLocaleString() ?? '—'} sub="Across all products" color="#8b5cf6" icon="BOX" />
         <KpiBox label="Units Sold (30d)" value={kpis?.unitsSold30d?.toLocaleString() ?? '—'} sub="Recent demand" color="#06b6d4" icon="📈" />
         <KpiBox label="Active POs" value={kpis?.activePOs ?? '—'} sub="Draft + Sent + Confirmed" color="#c2410c" icon="📋" />
-        <KpiBox label="Total PO Value" value={kpis ? `$${(kpis.totalPOValue / 1000).toFixed(1)}k` : '—'} sub="All purchase orders" color="#10b981" icon="💰" />
+        <KpiBox label="Total PO Value" value={kpis ? `$${(kpis.totalPOValue / 1000).toFixed(1)}k` : '—'} sub="All purchase orders" color="#10b981" icon="$" />
       </motion.div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
@@ -179,3 +179,4 @@ export default function SupplyChain() {
     </div>
   );
 }
+

@@ -30,7 +30,7 @@
   background: linear-gradient(135deg, #c2410c, #9a3412);
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 17px;
+  font-size: 13px; font-weight: 900; letter-spacing: -.02em;
   box-shadow: 0 4px 16px rgba(194,65,12,0.45);
   animation: float 4s ease-in-out infinite;
 }
@@ -121,5 +121,6 @@
   .sidebarFooter { display: none; }
   .main { margin-left: 60px; padding: 20px 16px; }
 }
+
 
 

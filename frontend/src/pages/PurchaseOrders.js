@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -166,7 +166,7 @@ export default function PurchaseOrders() {
                         style={{ ...inp, width: 130, padding: '6px 10px', colorScheme: 'dark' }}>
                         {['draft','sent','confirmed','delivered','cancelled'].map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
                       </select>
-                      <button onClick={() => exportPO(po)} style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: 11, cursor: 'pointer' }}>⬇ PO</button>
+                      <button onClick={() => exportPO(po)} style={{ padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: 11, cursor: 'pointer' }}>Export PO</button>
                       <button onClick={() => delMutation.mutate(po._id)} style={{ padding: '6px 10px', borderRadius: 8, background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', fontSize: 11, cursor: 'pointer' }}>✕</button>
                     </div>
                   </div>
@@ -263,3 +263,4 @@ export default function PurchaseOrders() {
     </div>
   );
 }
+
