@@ -70,10 +70,10 @@ function Topbar() {
         {/* Avatar */}
         <div style={{
           width: 38, height: 38, borderRadius: 12,
-          background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+          background: 'linear-gradient(135deg, #c2410c, #9a3412)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: 14, fontWeight: 700, color: '#fff',
-          boxShadow: '0 4px 14px rgba(99,102,241,0.4)',
+          boxShadow: '0 4px 14px rgba(194,65,12,0.5)',
           cursor: 'pointer',
         }}>AI</div>
       </div>
@@ -181,6 +181,7 @@ export default function App() {
     </SocketProvider>
   );
 }
+
 
 
 
