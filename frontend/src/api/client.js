@@ -106,9 +106,24 @@ export const analyticsApi = {
 };
 
 export const scenariosApi = {
-  list:   ()         => api.get('/api/scenarios'),
-  save:   (data)     => api.post('/api/scenarios', data),
-  remove: (id)       => api.delete(`/api/scenarios/${id}`),
+  list:   ()     => api.get('/api/scenarios'),
+  save:   (data) => api.post('/api/scenarios', data),
+  remove: (id)   => api.delete(`/api/scenarios/${id}`),
+};
+
+export const suppliersApi = {
+  list:   ()         => api.get('/api/suppliers'),
+  create: (data)     => api.post('/api/suppliers', data),
+  update: (id, data) => api.put(`/api/suppliers/${id}`, data),
+  remove: (id)       => api.delete(`/api/suppliers/${id}`),
+};
+
+export const poApi = {
+  list:         ()         => api.get('/api/purchase-orders'),
+  create:       (data)     => api.post('/api/purchase-orders', data),
+  updateStatus: (id, s)    => api.patch(`/api/purchase-orders/${id}/status`, { status: s }),
+  remove:       (id)       => api.delete(`/api/purchase-orders/${id}`),
+  kpis:         ()         => api.get('/api/purchase-orders/kpis'),
 };
 
 export const vizApi = {

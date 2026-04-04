@@ -36,7 +36,7 @@ const PAGE_TITLES = {
   '/': 'Dashboard', '/predictions': 'Predictions', '/forecast': 'Forecast',
   '/decisions': 'RL Decisions', '/inventory': 'Inventory', '/analytics': 'Analytics',
   '/products': 'Products', '/datasets': 'Datasets', '/model-card': 'Model Card',
-  '/data-viz': 'Data Visualizations', '/calendar': 'Demand Calendar', '/settings': 'Settings',
+  '/data-viz': 'Data Visualizations', '/calendar': 'Demand Calendar', '/settings': 'Settings', '/supply-chain': 'Supply Chain Overview', '/suppliers': 'Supplier Management', '/purchase-orders': 'Purchase Orders',
 };
 
 function Topbar() {
@@ -181,6 +181,8 @@ export default function App() {
     </SocketProvider>
   );
 }
+
+
 
 
 
