@@ -6,16 +6,16 @@ import toast from 'react-hot-toast';
 import { datasetsApi } from '../api/client';
 import styles from './Datasets.module.css';
 
-const REQUIRED_FIELDS = ['date_or_month', 'quantity', 'product_name', 'category', 'price'];
-const OPTIONAL_FIELDS = ['temperature', 'trend_score', 'stock', 'day_of_week'];
+const REQUIRED_FIELDS = ['quantity'];
+const OPTIONAL_FIELDS = ['date_or_month', 'product_name', 'category', 'price', 'temperature', 'trend_score', 'stock', 'day_of_week'];
 const ALL_FIELDS = [...REQUIRED_FIELDS, ...OPTIONAL_FIELDS];
 
 const FIELD_LABELS = {
-  date_or_month: 'Date or Month *',
-  quantity: 'Quantity Sold *',
-  product_name: 'Product Name *',
-  category: 'Category *',
-  price: 'Price *',
+  date_or_month: 'Date or Month',
+  quantity: 'Quantity / Sales *',
+  product_name: 'Product Name',
+  category: 'Category',
+  price: 'Price / Revenue',
   temperature: 'Temperature',
   trend_score: 'Market Trend Score',
   stock: 'Stock Level',
@@ -44,9 +44,29 @@ export default function Datasets() {
     onSuccess: (res) => {
       const data = res?.data || res;
       setUploadResult(data);
-      setMappings({});
+
+      // Auto-detect column mappings from common patterns
+      const cols = (data?.columns || []).map(c => c.toLowerCase());
+      const autoMap = {};
+      const find = (...patterns) => data?.columns?.find(c => patterns.some(p => c.toLowerCase().includes(p)));
+
+      autoMap.quantity     = find('qty', 'quantity', 'sales', 'weekly_sales', 'units', 'sold', 'demand', 'volume', 'amount');
+      autoMap.date_or_month = find('date', 'month', 'week', 'period', 'time', 'year');
+      autoMap.product_name = find('product', 'item', 'name', 'sku', 'description', 'store');
+      autoMap.category     = find('category', 'dept', 'department', 'type', 'class', 'segment');
+      autoMap.price        = find('price', 'revenue', 'sales_amount', 'value', 'cost', 'fuel_price', 'cpi');
+      autoMap.temperature  = find('temp', 'temperature', 'weather');
+      autoMap.stock        = find('stock', 'inventory', 'supply');
+      autoMap.day_of_week  = find('day', 'weekday', 'dow');
+      autoMap.trend_score  = find('trend', 'score', 'index', 'unemployment');
+
+      // Remove undefined values
+      Object.keys(autoMap).forEach(k => { if (!autoMap[k]) delete autoMap[k]; });
+
+      setMappings(autoMap);
       setStep('mapping');
-      toast.success(`Uploaded ${data?.row_count} rows — now map your columns`);
+      const mapped = Object.keys(autoMap).length;
+      toast.success(`Uploaded ${data?.row_count} rows — auto-detected ${mapped} columns`, { duration: 5000 });
     },
     onError: (e) => toast.error(`Upload failed: ${e.message}`)
   });
@@ -169,7 +189,10 @@ export default function Datasets() {
 2024-01-15,iPhone 15,Electronics,12,999,18
 2024-01-15,Nike Air Max,Clothing,25,120,18
 2024-01-16,Organic Coffee,Food,80,18,17`}</pre>
-            <p className={styles.sampleNote}>Your columns can have any names — you'll map them in the next step.</p>
+            <p className={styles.sampleNote}>
+              Only <strong>Quantity / Sales</strong> is required — all other columns are optional and auto-detected.
+              Works with Walmart, retail, e-commerce, or any sales dataset.
+            </p>
           </div>
         </motion.div>
       )}
