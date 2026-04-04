@@ -1,29 +1,39 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { insightsApi, externalApi } from '../api/client';
+import { useNavigate } from 'react-router-dom';
+import { insightsApi, externalApi, vizApi } from '../api/client';
 import { useSocket } from '../context/SocketContext';
-import SalesChart from '../components/SalesChart';
-import TopProductsChart from '../components/TopProductsChart';
 import Skeleton from '../components/Skeleton';
 import styles from './Dashboard.module.css';
+import {
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis,
+  CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
+} from 'recharts';
 
 const stagger = { show: { transition: { staggerChildren: 0.07 } } };
 const fadeUp  = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: .3 } } };
 
+const COLORS = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4'];
+const TT = {
+  backgroundColor: 'rgba(8,12,20,0.97)',
+  border: '1px solid rgba(99,102,241,0.25)',
+  borderRadius: 12, fontSize: 12, color: '#f1f5f9', padding: '10px 14px'
+};
+
 const KPI_CONFIG = [
-  { key: 'sales',   label: 'Units Sold (30d)', icon: '📦', color: '#6366f1', glow: '#6366f1' },
-  { key: 'revenue', label: 'Revenue (30d)',     icon: '💰', color: '#10b981', glow: '#10b981' },
-  { key: 'alerts',  label: 'Stock Alerts',      icon: '⚠️', color: '#f59e0b', glow: '#f59e0b' },
-  { key: 'trend',   label: 'Demand Trend',      icon: '📈', color: '#8b5cf6', glow: '#8b5cf6' },
+  { key: 'sales',   label: 'Units Sold',    icon: '📦', color: '#6366f1' },
+  { key: 'revenue', label: 'Revenue',       icon: '💰', color: '#10b981' },
+  { key: 'alerts',  label: 'Stock Alerts',  icon: '⚠️', color: '#f59e0b' },
+  { key: 'trend',   label: 'Demand Trend',  icon: '📈', color: '#8b5cf6' },
 ];
 
-function KpiCard({ label, value, icon, color, glow, trend, meta, loading }) {
+function KpiCard({ label, value, icon, color, trend, meta, loading }) {
   const trendClass = trend > 0 ? styles.kpiTrendUp : trend < 0 ? styles.kpiTrendDown : styles.kpiTrendFlat;
   const trendIcon  = trend > 0 ? '↑' : trend < 0 ? '↓' : '→';
   return (
     <motion.div className={styles.kpiCard} variants={fadeUp} whileHover={{ y: -3 }}>
-      <div className={styles.kpiGlow} style={{ background: glow }} />
+      <div className={styles.kpiGlow} style={{ background: color }} />
       <div className={styles.kpiTop}>
         <span className={styles.kpiLabel}>{label}</span>
         <div className={styles.kpiIcon} style={{ background: `${color}18`, border: `1px solid ${color}30` }}>{icon}</div>
@@ -45,9 +55,43 @@ function KpiCard({ label, value, icon, color, glow, trend, meta, loading }) {
 export default function Dashboard() {
   const { connected, dashboardUpdate, lastSale } = useSocket();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [liveSales, setLiveSales] = useState([]);
 
-  const { data: insights, isLoading } = useQuery({
+  // ── Detect uploaded dataset ──────────────────────────────────
+  const { data: dsList } = useQuery({
+    queryKey: ['viz-datasets-list'],
+    queryFn: () => vizApi.datasetsList().then(r => r.data),
+    staleTime: 30000,
+  });
+  const activeDataset = dsList?.[0]; // most recent mapped dataset
+  const dsId = activeDataset?.dataset_id;
+  const hasDataset = !!dsId;
+
+  // ── Dataset-based data (when CSV uploaded) ───────────────────
+  const { data: dsOverview, isLoading: dsOvLoading } = useQuery({
+    queryKey: ['viz-overview', dsId],
+    queryFn: () => vizApi.overview(dsId).then(r => r.data),
+    enabled: hasDataset, staleTime: 60000,
+  });
+  const { data: dsTimeseries, isLoading: dsTsLoading } = useQuery({
+    queryKey: ['viz-ts', dsId],
+    queryFn: () => vizApi.timeseries(dsId).then(r => r.data),
+    enabled: hasDataset, staleTime: 60000,
+  });
+  const { data: dsTopProducts, isLoading: dsTopLoading } = useQuery({
+    queryKey: ['viz-top', dsId],
+    queryFn: () => vizApi.topProducts(dsId, 8).then(r => r.data),
+    enabled: hasDataset, staleTime: 60000,
+  });
+  const { data: dsByCategory } = useQuery({
+    queryKey: ['viz-cat', dsId],
+    queryFn: () => vizApi.byCategory(dsId).then(r => r.data),
+    enabled: hasDataset, staleTime: 60000,
+  });
+
+  // ── Simulated/live data (fallback when no dataset) ───────────
+  const { data: insights, isLoading: insLoading } = useQuery({
     queryKey: ['insights'],
     queryFn: () => insightsApi.getSummary().then(r => r.data),
     refetchInterval: 60000,
@@ -70,69 +114,204 @@ export default function Dashboard() {
     }
   }, [lastSale, queryClient]);
 
-  const lowStock  = dashboardUpdate?.lowStockAlerts || insights?.lowStockAlerts || [];
-  const bm        = insights?.businessMetrics || {};
-  const demandPct = insights?.demandChangePct || 0;
+  // ── Source switcher: dataset overrides simulated data ────────
+  const isDatasetMode = hasDataset && dsOverview?.totalRows > 0;
 
-  const kpis = [
+  const kpiLoading = isDatasetMode ? dsOvLoading : insLoading;
+  const lowStock   = dashboardUpdate?.lowStockAlerts || insights?.lowStockAlerts || [];
+  const bm         = insights?.businessMetrics || {};
+  const demandPct  = insights?.demandChangePct || 0;
+
+  // KPIs: dataset mode uses viz data, live mode uses insights
+  const kpis = isDatasetMode ? [
+    { key: 'sales',   value: dsOverview?.totalQty?.toLocaleString(),                                    meta: `${activeDataset?.filename}` },
+    { key: 'revenue', value: `$${((dsOverview?.totalRevenue || 0) / 1000).toFixed(1)}k`,               meta: 'from dataset' },
+    { key: 'alerts',  value: dsOverview?.categoryBreakdown?.length || 0,                               meta: 'categories' },
+    { key: 'trend',   value: `${dsOverview?.totalProducts || 0} products`,                             meta: 'in dataset' },
+  ] : [
     { key: 'sales',   value: insights?.totalSalesLast30Days ?? '—', trend: demandPct, meta: 'vs prev 30d' },
-    { key: 'revenue', value: `$${((insights?.totalRevenueLast30Days || 0) / 1000).toFixed(1)}k`, meta: '30-day total' },
-    { key: 'alerts',  value: lowStock.length, trend: lowStock.length > 0 ? -1 : 0, meta: 'need reorder' },
-    { key: 'trend',   value: `${demandPct > 0 ? '+' : ''}${demandPct}%`, trend: demandPct, meta: 'demand change' },
+    { key: 'revenue', value: `$${((insights?.totalRevenueLast30Days || 0) / 1000).toFixed(1)}k`,       meta: '30-day total' },
+    { key: 'alerts',  value: lowStock.length, trend: lowStock.length > 0 ? -1 : 0,                    meta: 'need reorder' },
+    { key: 'trend',   value: `${demandPct > 0 ? '+' : ''}${demandPct}%`, trend: demandPct,            meta: 'demand change' },
   ];
+
+  // Chart data: dataset mode uses uploaded CSV timeseries
+  const chartTimeseries = isDatasetMode
+    ? (dsTimeseries || []).map(d => ({ _id: d._id, totalQty: d.qty, totalRevenue: d.revenue }))
+    : (timeseries || []);
+
+  const chartTopProducts = isDatasetMode
+    ? (dsTopProducts || []).map(p => ({ name: p.name, qty: p.totalQty }))
+    : (insights?.topProducts || []).map(p => ({ name: p.name, qty: p.qty }));
+
+  const chartTitle = isDatasetMode
+    ? `Dataset: ${activeDataset?.filename} — ${(activeDataset?.processed_rows || 0).toLocaleString()} rows`
+    : 'Sales & Revenue — Last 14 Days';
 
   return (
     <div className={styles.page}>
+
+      {/* Source indicator banner */}
+      {isDatasetMode && (
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '10px 16px', borderRadius: 12, marginBottom: 4,
+            background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
+            fontSize: 12.5,
+          }}>
+          <span style={{ color: '#a5b4fc', fontWeight: 600 }}>
+            📂 Showing data from: <strong>{activeDataset?.filename}</strong>
+          </span>
+          <button onClick={() => navigate('/data-viz')}
+            style={{
+              background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)',
+              color: '#a5b4fc', padding: '4px 12px', borderRadius: 8,
+              fontSize: 11, fontWeight: 600, cursor: 'pointer',
+            }}>
+            View Full Analysis →
+          </button>
+        </motion.div>
+      )}
+
       {/* KPI row */}
       <motion.div className={styles.kpiGrid} variants={stagger} initial="hidden" animate="show">
         {KPI_CONFIG.map((cfg, i) => (
-          <KpiCard key={cfg.key} {...cfg} {...kpis[i]} loading={isLoading} />
+          <KpiCard key={cfg.key} {...cfg} {...kpis[i]} loading={kpiLoading} />
         ))}
       </motion.div>
 
       {/* Charts */}
       <motion.div className={styles.chartsRow} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .2 }}>
+
+        {/* Main timeseries chart */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>Sales & Revenue — Last 14 Days</span>
-            <span className={styles.cardBadge}>Live</span>
+            <span className={styles.cardTitle}>{chartTitle}</span>
+            <span className={styles.cardBadge}>{isDatasetMode ? 'Dataset' : 'Live'}</span>
           </div>
-          {tsLoading ? <Skeleton variant="row" count={4} height={20} /> : <SalesChart data={timeseries || []} />}
+          {(isDatasetMode ? dsTsLoading : tsLoading)
+            ? <Skeleton variant="row" count={4} height={20} />
+            : chartTimeseries.length === 0
+              ? <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--muted)', fontSize: 13 }}>
+                  No time-series data available
+                </div>
+              : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <AreaChart data={chartTimeseries} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="qG" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%"  stopColor="#6366f1" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%"  stopColor="#10b981" stopOpacity={0.25} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="_id" tick={{ fill: '#64748b', fontSize: 10 }} tickLine={false}
+                      interval={Math.max(0, Math.floor((chartTimeseries.length || 1) / 7) - 1)} />
+                    <YAxis yAxisId="q" tick={{ fill: '#64748b', fontSize: 10 }} tickLine={false} axisLine={false} />
+                    <YAxis yAxisId="r" orientation="right" tick={{ fill: '#10b981', fontSize: 10 }}
+                      tickLine={false} axisLine={false} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={TT}
+                      formatter={(v, n) => n === 'Revenue' ? [`$${v.toLocaleString()}`, n] : [v.toLocaleString(), n]} />
+                    <Legend wrapperStyle={{ fontSize: 11, color: '#94a3b8' }} />
+                    <Area yAxisId="q" type="monotone" dataKey="totalQty"     name="Units Sold" stroke="#6366f1" fill="url(#qG)" strokeWidth={2} dot={false} />
+                    <Area yAxisId="r" type="monotone" dataKey="totalRevenue" name="Revenue"    stroke="#10b981" fill="url(#rG)" strokeWidth={2} dot={false} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )
+          }
         </div>
+
+        {/* Top products chart */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>
-            <span className={styles.cardTitle}>Top Products (7d)</span>
+            <span className={styles.cardTitle}>
+              {isDatasetMode ? 'Top Products (Dataset)' : 'Top Products (7d)'}
+            </span>
           </div>
-          <TopProductsChart products={insights?.topProducts} />
+          {(isDatasetMode ? dsTopLoading : insLoading)
+            ? <Skeleton variant="row" count={3} height={16} />
+            : chartTopProducts.length === 0
+              ? <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--muted)', fontSize: 13 }}>No product data</div>
+              : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={chartTopProducts} layout="vertical"
+                    margin={{ top: 4, right: 40, left: 10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+                    <XAxis type="number" tick={{ fill: '#64748b', fontSize: 10 }} tickLine={false} axisLine={false} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: '#94a3b8', fontSize: 11 }}
+                      tickLine={false} width={120}
+                      tickFormatter={v => v.length > 14 ? v.slice(0, 14) + '…' : v} />
+                    <Tooltip contentStyle={TT} formatter={v => [v.toLocaleString(), 'Units']} />
+                    <Bar dataKey="qty" name="Units" radius={[0, 6, 6, 0]}>
+                      {chartTopProducts.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )
+          }
         </div>
       </motion.div>
 
       {/* Bottom row */}
       <motion.div className={styles.bottomRow} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3 }}>
 
-        {/* Business metrics */}
+        {/* Category breakdown (dataset) or Business metrics (live) */}
         <div className={styles.card} style={{ gridColumn: 'span 3' }}>
-          <div className={styles.cardHeader}><span className={styles.cardTitle}>Business Metrics</span></div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-            {[
-              { label: '30d Profit',      value: `$${(bm.profit30Days || 0).toLocaleString()}`,    color: '#10b981' },
-              { label: 'Stock Value',     value: `$${(bm.totalStockValue || 0).toLocaleString()}`, color: '#6366f1' },
-              { label: 'Idle Stock Cost', value: `$${(bm.idleStockCost || 0).toLocaleString()}`,  color: '#f59e0b' },
-              { label: 'Efficiency',      value: `${bm.efficiencyScore || 0}%`,                   color: bm.efficiencyScore > 70 ? '#10b981' : '#f59e0b' },
-            ].map(m => (
-              <div key={m.label} style={{ padding: '12px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: 20, fontWeight: 800, color: m.color, letterSpacing: '-.02em' }}>{m.value}</div>
-                <div style={{ fontSize: 10.5, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: 3 }}>{m.label}</div>
-              </div>
-            ))}
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>
+              {isDatasetMode ? 'Category Breakdown — Dataset' : 'Business Metrics'}
+            </span>
           </div>
+          {isDatasetMode ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10 }}>
+              {(dsByCategory || []).map((cat, i) => (
+                <div key={cat._id} style={{
+                  padding: '12px 14px', borderRadius: 12,
+                  background: `${COLORS[i % COLORS.length]}10`,
+                  border: `1px solid ${COLORS[i % COLORS.length]}30`,
+                }}>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: COLORS[i % COLORS.length] }}>
+                    {cat.totalQty?.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: 10.5, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: 3 }}>
+                    {cat._id}
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 2 }}>
+                    ${cat.totalRevenue?.toLocaleString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+              {[
+                { label: '30d Profit',      value: `$${(bm.profit30Days || 0).toLocaleString()}`,    color: '#10b981' },
+                { label: 'Stock Value',     value: `$${(bm.totalStockValue || 0).toLocaleString()}`, color: '#6366f1' },
+                { label: 'Idle Stock Cost', value: `$${(bm.idleStockCost || 0).toLocaleString()}`,  color: '#f59e0b' },
+                { label: 'Efficiency',      value: `${bm.efficiencyScore || 0}%`,                   color: bm.efficiencyScore > 70 ? '#10b981' : '#f59e0b' },
+              ].map(m => (
+                <div key={m.label} style={{
+                  padding: '12px 14px', borderRadius: 12,
+                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+                }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: m.color, letterSpacing: '-.02em' }}>{m.value}</div>
+                  <div style={{ fontSize: 10.5, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: 3 }}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* AI Insights */}
         <div className={styles.card}>
           <div className={styles.cardHeader}>
             <span className={styles.cardTitle}>🧠 AI Insights</span>
-            <span className={styles.cardBadge}>Auto-generated</span>
+            <span className={styles.cardBadge}>{isDatasetMode ? 'Dataset' : 'Live'}</span>
           </div>
           <div className={styles.insightList}>
             {(insights?.insights?.length ? insights.insights : [
@@ -181,7 +360,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* External signals */}
+        {/* External signals + low stock */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className={styles.card}>
             <div className={styles.cardHeader}><span className={styles.cardTitle}>External Signals</span></div>
