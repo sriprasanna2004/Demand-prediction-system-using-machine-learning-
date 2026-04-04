@@ -11,8 +11,8 @@ import {
   CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
 
-const stagger = { show: { transition: { staggerChildren: 0.07 } } };
-const fadeUp  = { hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: .3 } } };
+const stagger = { show: { transition: { staggerChildren: 0.1 } } };
+const fadeUp  = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: .3 } } };
 
 const COLORS = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4'];
 const TT = {
@@ -32,7 +32,7 @@ function KpiCard({ label, value, icon, color, trend, meta, loading }) {
   const trendClass = trend > 0 ? styles.kpiTrendUp : trend < 0 ? styles.kpiTrendDown : styles.kpiTrendFlat;
   const trendIcon  = trend > 0 ? '↑' : trend < 0 ? '↓' : '→';
   return (
-    <motion.div className={styles.kpiCard} variants={fadeUp} whileHover={{ y: -3 }}>
+    <motion.div className={styles.kpiCard} variants={fadeUp} style={{ '--kpi-color': color }}>
       <div className={styles.kpiGlow} style={{ background: color }} />
       <div className={styles.kpiTop}>
         <span className={styles.kpiLabel}>{label}</span>
@@ -442,7 +442,7 @@ function KpiCard({ label, value, icon, color, trend, meta, loading }) {
   const trendClass = trend > 0 ? styles.kpiTrendUp : trend < 0 ? styles.kpiTrendDown : styles.kpiTrendFlat;
   const trendIcon  = trend > 0 ? '↑' : trend < 0 ? '↓' : '→';
   return (
-    <motion.div className={styles.kpiCard} variants={fadeUp} whileHover={{ y: -3 }}>
+    <motion.div className={styles.kpiCard} variants={fadeUp} style={{ '--kpi-color': color }}>
       <div className={styles.kpiGlow} style={{ background: color }} />
       <div className={styles.kpiTop}>
         <span className={styles.kpiLabel}>{label}</span>
@@ -840,6 +840,8 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
 
 
 

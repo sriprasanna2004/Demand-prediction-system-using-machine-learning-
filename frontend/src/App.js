@@ -52,8 +52,8 @@ function Topbar() {
       borderBottom: '1px solid rgba(255,255,255,0.06)',
     }}>
       <div>
-        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.03em', color: 'var(--text)' }}>{title}</h1>
-        <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{dateStr} · AI-powered demand intelligence</p>
+        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-.04em', color: '#f1f5f9', fontFamily: "'Syne', 'Inter', sans-serif" }}>{title}</h1>
+        <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.3)', marginTop: 3, letterSpacing: '.02em' }}>{dateStr} · AI-powered demand intelligence</p>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         {/* Notification bell */}
@@ -181,6 +181,8 @@ export default function App() {
     </SocketProvider>
   );
 }
+
+
 
 
 
