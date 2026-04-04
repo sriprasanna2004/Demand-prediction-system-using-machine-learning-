@@ -108,3 +108,12 @@
 }
 .statVal   { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -.02em; }
 .statLabel { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+/* Missing classes used by Forecast.js */
+.resultGrid { display: flex; flex-direction: column; gap: 20px; }
+.cardHeader { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
+.cardTitle { font-size: 14px; font-weight: 700; color: var(--text); }
+.subTitle { font-size: 11px; font-weight: 700; color: var(--muted); margin: 16px 0 10px; text-transform: uppercase; letter-spacing: .07em; }
+.metaBadges { display: flex; gap: 8px; flex-wrap: wrap; }
+.explainToggle { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--text); }
+.explainToggle input { accent-color: var(--accent); }

@@ -201,3 +201,23 @@
   padding: 8px 12px; border-radius: 10px;
   background: rgba(255,255,255,0.04); font-size: 13px; color: var(--text2);
 }
+
+/* Classes used by Predictions.js - restored */
+.form { display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.label { font-size: 12px; color: var(--muted); font-weight: 500; }
+.explainToggle { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: var(--text); padding: 8px 12px; background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); }
+.explainToggle input { accent-color: var(--accent); }
+.resultPanel { display: flex; flex-direction: column; gap: 16px; }
+.productName { font-size: 15px; font-weight: 700; color: #a5b4fc; }
+.bigNumber { font-size: 42px; font-weight: 800; color: var(--text); line-height: 1; }
+.bigUnit { font-size: 16px; font-weight: 400; color: var(--muted); }
+.metaGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.metaLabel { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.metaValue { font-size: 18px; font-weight: 700; color: var(--text); }
+.qualityRow { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+.explanationSection { display: flex; flex-direction: column; gap: 8px; padding: 14px; background: rgba(99,102,241,0.06); border-radius: 12px; border: 1px solid rgba(99,102,241,0.2); }
+.explainTitle { font-size: 13px; font-weight: 700; color: #a5b4fc; margin-bottom: 4px; }
+.explainLine { font-size: 12px; color: var(--text2); line-height: 1.5; padding: 6px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 2px solid var(--accent); }
+.emptyResult { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; height: 200px; color: var(--muted); }
+.emptyIcon { font-size: 40px; }
