@@ -54,7 +54,7 @@
   padding-right: 36px;
 }
 .select:focus {
-  border-color: rgba(249,115,22,0.5);
+  border-color: rgba(194,65,12,0.5);
   box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
 }
 .select option { background: #0d1220; color: var(--text); }
@@ -62,16 +62,16 @@
 /* Primary button */
 .btnPrimary {
   padding: 12px 20px;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #c2410c, #9a3412);
   color: #fff; border: none; border-radius: 12px;
   font-size: 13.5px; font-weight: 700; cursor: pointer;
   transition: all .2s;
-  box-shadow: 0 4px 20px rgba(249,115,22,0.35);
+  box-shadow: 0 4px 20px rgba(194,65,12,0.35);
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .btnPrimary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 28px rgba(249,115,22,0.5);
+  box-shadow: 0 8px 28px rgba(194,65,12,0.5);
 }
 .btnPrimary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 
@@ -127,7 +127,7 @@
   display: flex; flex-direction: column; gap: 4px;
 }
 .scenarioBtn:hover {
-  border-color: rgba(249,115,22,0.35);
+  border-color: rgba(194,65,12,0.35);
   background: rgba(99,102,241,0.06);
   transform: translateY(-1px);
 }
@@ -154,7 +154,7 @@
   padding: 3px 10px; border-radius: 20px;
   background: rgba(99,102,241,0.2); color: #a5b4fc;
   font-size: 11px; font-weight: 700;
-  border: 1px solid rgba(249,115,22,0.3);
+  border: 1px solid rgba(194,65,12,0.3);
 }
 .scenarioDemand { display: flex; align-items: center; gap: 16px; }
 .demandItem { display: flex; flex-direction: column; gap: 3px; }
@@ -216,4 +216,5 @@
   .topGrid { grid-template-columns: 1fr; }
   .scenarioGrid { grid-template-columns: 1fr; }
 }
+
 

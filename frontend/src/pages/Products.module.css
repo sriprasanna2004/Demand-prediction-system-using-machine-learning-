@@ -30,7 +30,7 @@
 .btnRow { display: flex; gap: 8px; }
 
 .btnPrimary {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #c2410c, #9a3412);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -116,4 +116,5 @@
   color: var(--text); font-size: 13px; font-family: inherit; outline: none;
 }
 .filterSelect option { background: #0d1220; }
+
 

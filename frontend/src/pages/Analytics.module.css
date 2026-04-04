@@ -22,10 +22,10 @@
   background: rgba(255,255,255,0.03); color: var(--muted); font-size: 12px;
   cursor: pointer; transition: all 0.15s; font-weight: 500;
 }
-.tab:hover { color: var(--text2); border-color: rgba(249,115,22,0.3); }
+.tab:hover { color: var(--text2); border-color: rgba(194,65,12,0.3); }
 .tab[data-active="true"] {
   background: rgba(99,102,241,0.15); color: #a5b4fc;
-  border-color: rgba(249,115,22,0.3);
+  border-color: rgba(194,65,12,0.3);
 }
 
 .section { display: flex; flex-direction: column; gap: 20px; }
@@ -78,7 +78,7 @@
 }
 .elasticityValue {
   font-size: 64px; font-weight: 900; letter-spacing: -0.04em;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #c2410c, #9a3412);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .elasticityLabel { font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
@@ -111,9 +111,9 @@
 .driftRec { font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 8px; }
 
 .btnPrimary {
-  padding: 10px 22px; background: linear-gradient(135deg, #f97316, #ea580c);
+  padding: 10px 22px; background: linear-gradient(135deg, #c2410c, #9a3412);
   color: #fff; border: none; border-radius: 10px; font-size: 13px;
-  font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(249,115,22,0.3);
+  font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(194,65,12,0.3);
   margin-top: 12px;
 }
 .btnPrimary:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -128,4 +128,5 @@
   .monitorGrid { grid-template-columns: 1fr; }
   .perfGrid { grid-template-columns: repeat(2, 1fr); }
 }
+
 

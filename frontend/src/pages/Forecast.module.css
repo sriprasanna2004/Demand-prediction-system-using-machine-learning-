@@ -19,7 +19,7 @@
   background-repeat: no-repeat; background-position: right 12px center;
   transition: border-color .2s;
 }
-.select:focus { border-color: rgba(249,115,22,0.5); }
+.select:focus { border-color: rgba(194,65,12,0.5); }
 .select option { background: #0d1220; color: var(--text); }
 
 .horizonGroup { display: flex; gap: 4px; }
@@ -29,21 +29,21 @@
   background: rgba(255,255,255,0.04); color: var(--muted); font-size: 12px;
   cursor: pointer; transition: all .18s; font-weight: 500;
 }
-.horizonBtn:hover { border-color: rgba(249,115,22,0.3); color: var(--text2); }
+.horizonBtn:hover { border-color: rgba(194,65,12,0.3); color: var(--text2); }
 .horizonBtn[data-active="true"] {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #c2410c, #9a3412);
   color: #fff; border-color: transparent;
-  box-shadow: 0 4px 12px rgba(249,115,22,0.35);
+  box-shadow: 0 4px 12px rgba(194,65,12,0.35);
 }
 
 .btnRun {
   margin-left: auto; padding: 9px 22px;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #c2410c, #9a3412);
   color: #fff; border: none; border-radius: 12px; font-size: 13px;
   font-weight: 700; cursor: pointer; transition: all .2s;
-  box-shadow: 0 4px 16px rgba(249,115,22,0.3);
+  box-shadow: 0 4px 16px rgba(194,65,12,0.3);
 }
-.btnRun:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(249,115,22,0.45); }
+.btnRun:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(194,65,12,0.45); }
 .btnRun:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .card {
@@ -55,7 +55,7 @@
 .card::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(249,115,22,0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(194,65,12,0.3), transparent);
 }
 
 .badge {
@@ -117,4 +117,5 @@
 .metaBadges { display: flex; gap: 8px; flex-wrap: wrap; }
 .explainToggle { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; color: var(--text); }
 .explainToggle input { accent-color: var(--accent); }
+
 
