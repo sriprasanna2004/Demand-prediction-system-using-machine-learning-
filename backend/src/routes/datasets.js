@@ -166,11 +166,32 @@ router.get('/', async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
-// DELETE /api/datasets/:id
+// DELETE /api/datasets/:id — delete dataset AND all products/sales created from it
 router.delete('/:id', async (req, res) => {
   try {
-    await Promise.all([Dataset.deleteOne({ dataset_id: req.params.id }), RawRow.deleteMany({ _dataset_id: req.params.id }), ProcessedRow.deleteMany({ _dataset_id: req.params.id })]);
-    res.json({ success: true });
+    const dataset_id = req.params.id;
+
+    // Get all product IDs that were created from this dataset's sales
+    const datasetSales = await Sale.find({ 'metadata.dataset_id': dataset_id }).distinct('productId');
+
+    // Delete in order: sales → products → raw/processed rows → dataset record
+    await Sale.deleteMany({ 'metadata.dataset_id': dataset_id });
+
+    // Only delete products that have NO other sales (not simulated/manual)
+    for (const pid of datasetSales) {
+      const otherSales = await Sale.countDocuments({ productId: pid, 'metadata.dataset_id': { $ne: dataset_id } });
+      if (otherSales === 0) {
+        await Product.findByIdAndDelete(pid);
+      }
+    }
+
+    await Promise.all([
+      Dataset.deleteOne({ dataset_id }),
+      RawRow.deleteMany({ _dataset_id: dataset_id }),
+      ProcessedRow.deleteMany({ _dataset_id: dataset_id }),
+    ]);
+
+    res.json({ success: true, message: `Dataset and ${datasetSales.length} associated products deleted` });
   } catch (err) { res.status(500).json({ success: false, error: err.message }); }
 });
 
@@ -202,7 +223,6 @@ router.post('/train', async (req, res) => {
 module.exports = router;
 
 // POST /api/datasets/purge-products — delete all products created from dataset imports
-// (keeps manually created products by checking for numeric-only names or dataset source sales)
 router.post('/purge-products', async (req, res) => {
   try {
     const { confirm } = req.body;
@@ -211,13 +231,9 @@ router.post('/purge-products', async (req, res) => {
     // Delete all sales from dataset imports (source: 'api')
     const salesResult = await Sale.deleteMany({ source: 'api' });
 
-    // Delete products that were auto-created from datasets
-    // Identify them: name is purely numeric OR created alongside api sales
-    const apiProductIds = await Sale.distinct('productId', { source: 'simulated' });
-    // Delete products NOT in the simulated sales set (i.e. only dataset-created ones)
-    // Safer: delete products with numeric names (store numbers like "1", "2", etc.)
-    const numericProducts = await Product.find({ isActive: true }).lean();
-    const toDelete = numericProducts.filter(p => /^\d+$/.test(p.name.trim()));
+    // Delete products with numeric-only names (store numbers from Walmart etc.)
+    const allProducts = await Product.find({}).lean();
+    const toDelete = allProducts.filter(p => /^\d+$/.test(p.name.trim()));
     const deleteIds = toDelete.map(p => p._id);
     let productsDeleted = 0;
     if (deleteIds.length) {

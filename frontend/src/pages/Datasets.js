@@ -121,7 +121,19 @@ export default function Datasets() {
 
   const deleteMutation = useMutation({
     mutationFn: (id) => datasetsApi.remove(id),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['datasets'] }); toast.success('Dataset deleted'); }
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ['datasets'] });
+      qc.invalidateQueries({ queryKey: ['products'] });
+      qc.invalidateQueries({ queryKey: ['insights'] });
+      qc.invalidateQueries({ queryKey: ['timeseries'] });
+      qc.invalidateQueries({ queryKey: ['batch-predict'] });
+      qc.invalidateQueries({ queryKey: ['viz-datasets-list'] });
+      qc.invalidateQueries({ queryKey: ['viz-overview'] });
+      qc.invalidateQueries({ queryKey: ['viz-ts'] });
+      qc.invalidateQueries({ queryKey: ['viz-cat'] });
+      qc.invalidateQueries({ queryKey: ['viz-top'] });
+      toast.success(res?.message || 'Dataset and associated products deleted');
+    }
   });
 
   const purgeMutation = useMutation({
