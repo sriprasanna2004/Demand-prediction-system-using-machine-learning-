@@ -62,7 +62,7 @@ export default function Dashboard() {
   const { data: dsList } = useQuery({
     queryKey: ['viz-datasets-list'],
     queryFn: () => vizApi.datasetsList().then(r => r.data),
-    staleTime: 30000,
+    staleTime: 0,
   });
   const activeDataset = dsList?.[0]; // most recent mapped dataset
   const dsId = activeDataset?.dataset_id;
@@ -72,22 +72,22 @@ export default function Dashboard() {
   const { data: dsOverview, isLoading: dsOvLoading } = useQuery({
     queryKey: ['viz-overview', dsId],
     queryFn: () => vizApi.overview(dsId).then(r => r.data),
-    enabled: hasDataset, staleTime: 60000,
+    enabled: hasDataset, staleTime: 0,
   });
   const { data: dsTimeseries, isLoading: dsTsLoading } = useQuery({
     queryKey: ['viz-ts', dsId],
     queryFn: () => vizApi.timeseries(dsId).then(r => r.data),
-    enabled: hasDataset, staleTime: 60000,
+    enabled: hasDataset, staleTime: 0,
   });
   const { data: dsTopProducts, isLoading: dsTopLoading } = useQuery({
     queryKey: ['viz-top', dsId],
     queryFn: () => vizApi.topProducts(dsId, 8).then(r => r.data),
-    enabled: hasDataset, staleTime: 60000,
+    enabled: hasDataset, staleTime: 0,
   });
   const { data: dsByCategory } = useQuery({
     queryKey: ['viz-cat', dsId],
     queryFn: () => vizApi.byCategory(dsId).then(r => r.data),
-    enabled: hasDataset, staleTime: 60000,
+    enabled: hasDataset, staleTime: 0,
   });
 
   // ── Simulated/live data (fallback when no dataset) ───────────
@@ -430,5 +430,6 @@ export default function Dashboard() {
     </div>
   );
 }
+
 
 

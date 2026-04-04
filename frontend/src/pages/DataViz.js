@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import {
@@ -64,7 +64,7 @@ export default function DataViz() {
   const { data: dsList, isLoading: dsListLoading } = useQuery({
     queryKey: ['viz-datasets-list'],
     queryFn: () => vizApi.datasetsList().then(r => r.data),
-    staleTime: 30000,
+    staleTime: 0,
     onSuccess: (data) => { if (data?.length && !selectedDs) setSelectedDs(data[0].dataset_id); }
   });
 
@@ -384,3 +384,4 @@ export default function DataViz() {
     </div>
   );
 }
+

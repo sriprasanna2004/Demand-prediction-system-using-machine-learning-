@@ -60,6 +60,12 @@ export default function Datasets() {
       qc.invalidateQueries({ queryKey: ['products'] });
       qc.invalidateQueries({ queryKey: ['insights'] });
       qc.invalidateQueries({ queryKey: ['timeseries'] });
+      qc.invalidateQueries({ queryKey: ['viz-datasets-list'] });
+      qc.invalidateQueries({ queryKey: ['viz-overview'] });
+      qc.invalidateQueries({ queryKey: ['viz-ts'] });
+      qc.invalidateQueries({ queryKey: ['viz-cat'] });
+      qc.invalidateQueries({ queryKey: ['viz-top'] });
+      qc.invalidateQueries({ queryKey: ['viz-monthly'] });
       const msg = data.message || `Mapped ${data.processed_rows} rows successfully`;
       toast.success(msg, { duration: 6000 });
     },
@@ -74,6 +80,12 @@ export default function Datasets() {
       qc.invalidateQueries({ queryKey: ['products'] });
       qc.invalidateQueries({ queryKey: ['batch-predict'] });
       qc.invalidateQueries({ queryKey: ['batch-ml-predictions'] });
+      qc.invalidateQueries({ queryKey: ['viz-datasets-list'] });
+      qc.invalidateQueries({ queryKey: ['viz-overview'] });
+      qc.invalidateQueries({ queryKey: ['viz-ts'] });
+      qc.invalidateQueries({ queryKey: ['viz-cat'] });
+      qc.invalidateQueries({ queryKey: ['viz-top'] });
+      qc.invalidateQueries({ queryKey: ['viz-monthly'] });
       const m = res.data?.metrics;
       const note = res.data?.note;
       if (note) {
