@@ -1,4 +1,4 @@
-.page { display: flex; flex-direction: column; gap: 24px; }
+﻿.page { display: flex; flex-direction: column; gap: 24px; }
 .title { font-size: 24px; font-weight: 700; }
 .cardTitle { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 16px; }
 .muted { color: var(--muted); }
@@ -30,7 +30,7 @@
 .btnRow { display: flex; gap: 8px; }
 
 .btnPrimary {
-  background: var(--accent);
+  background: linear-gradient(135deg, #f97316, #ea580c);
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -116,3 +116,4 @@
   color: var(--text); font-size: 13px; font-family: inherit; outline: none;
 }
 .filterSelect option { background: #0d1220; }
+

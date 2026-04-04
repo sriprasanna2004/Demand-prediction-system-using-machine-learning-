@@ -1,4 +1,4 @@
-.page { display: flex; flex-direction: column; gap: 24px; }
+﻿.page { display: flex; flex-direction: column; gap: 24px; }
 .title { font-size: 24px; font-weight: 700; }
 .subtitle { color: var(--muted); font-size: 13px; margin-top: 2px; }
 .muted { color: var(--muted); font-size: 13px; }
@@ -82,3 +82,4 @@
   color: var(--text); font-size: 12px; font-family: inherit; outline: none;
 }
 .filterSelect option { background: #0d1220; }
+
