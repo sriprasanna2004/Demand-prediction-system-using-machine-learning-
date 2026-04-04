@@ -1,4 +1,4 @@
-const router = require('express').Router();
+﻿const router = require('express').Router();
 const axios = require('axios');
 const Product = require('../models/Product');
 const Sale = require('../models/Sale');
@@ -59,7 +59,7 @@ router.post('/', async (req, res) => {
     if (!product) return res.status(404).json({ success: false, error: 'Product not found' });
 
     try {
-      const mlRes = await axios.post(`${ML_URL}/forecast`, { product_id: productId, category: product.category, horizon }, { timeout: 8000 });
+      const mlRes = await axios.post(`${ML_URL}/forecast`, { product_id: productId, category: product.category, horizon }, { timeout: 15000 });
       return res.json({ success: true, data: mlRes.data });
     } catch (_) {
       const data = await localForecast(productId, product.category, horizon);
@@ -79,7 +79,7 @@ router.post('/explain', async (req, res) => {
 
     const features = await buildFeatureVector(product, targetDate, price);
     try {
-      const mlRes = await axios.post(`${ML_URL}/predict/explain`, features, { timeout: 10000 });
+      const mlRes = await axios.post(`${ML_URL}/predict/explain`, features, { timeout: 15000 });
       return res.json({ success: true, data: { product: { id: product._id, name: product.name }, ...mlRes.data } });
     } catch (_) {
       return res.json({ success: true, data: { product: { id: product._id, name: product.name }, explanation: { explanation: ['ML service unavailable — explanation not available.'], contributions: [] } } });
@@ -90,3 +90,4 @@ router.post('/explain', async (req, res) => {
 });
 
 module.exports = router;
+

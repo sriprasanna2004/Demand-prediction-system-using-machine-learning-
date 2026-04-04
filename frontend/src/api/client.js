@@ -6,7 +6,7 @@ const BASE = typeof window !== 'undefined' && window.location.hostname === 'loca
   ? 'http://localhost:4000'
   : RAILWAY;
 
-const api = axios.create({ baseURL: BASE, timeout: 30000 });
+const api = axios.create({ baseURL: BASE, timeout: 60000 });
 
 // Keep-alive ping every 10 minutes to prevent Render cold starts
 if (typeof window !== 'undefined') {
@@ -19,7 +19,7 @@ api.interceptors.response.use(
   (res) => res.data,
   (err) => {
     if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
-      return Promise.reject(new Error('Server is waking up — please try again in a moment'));
+      return Promise.reject(new Error('Request timed out — the ML model is processing. Please try again.'));
     }
     return Promise.reject(new Error(err.response?.data?.error || err.message || 'Request failed'));
   }

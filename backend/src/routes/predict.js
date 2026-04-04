@@ -1,4 +1,4 @@
-const router = require('express').Router();
+﻿const router = require('express').Router();
 const axios = require('axios');
 const Product = require('../models/Product');
 const { buildFeatureVector, getFallbackPrediction } = require('../services/featureBuilder');
@@ -28,7 +28,7 @@ router.post('/', validate(predictSchema), async (req, res) => {
     let fallbackReason = null;
 
     try {
-      const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 4000 });
+      const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 15000 });
       prediction = mlRes.data;
     } catch (mlErr) {
       // ML service unavailable — use statistical fallback
@@ -78,7 +78,7 @@ router.get('/batch', async (req, res) => {
       products.map(async (product) => {
         const features = await buildFeatureVector(product, targetDate, product.price);
         try {
-          const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 3000 });
+          const mlRes = await axios.post(`${ML_URL}/predict`, features, { timeout: 15000 });
           return { productId: product._id, name: product.name, ...mlRes.data };
         } catch {
           const fallback = await getFallbackPrediction(product, features);
@@ -119,3 +119,4 @@ router.post('/retrain', async (req, res) => {
 });
 
 module.exports = router;
+
