@@ -94,8 +94,8 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log(`Client disconnected: ${socket.id}`));
 });
 
-// Real-time simulation: insert a new sale every 8 seconds
-cron.schedule('*/8 * * * * *', async () => {
+// Real-time simulation: insert a new sale every 30 seconds (reduced from 8s to save MongoDB RAM)
+cron.schedule('*/30 * * * * *', async () => {
   try {
     const sale = await runSimulation();
     if (sale) {
@@ -176,6 +176,11 @@ mongoose
     db.collection('sales').createIndex({ source: 1, 'metadata.dataset_id': 1 }).catch(() => {});
     db.collection('products').createIndex({ isActive: 1, category: 1 }).catch(() => {});
     db.collection('prediction_audit').createIndex({ product_id: 1, timestamp: -1 }).catch(() => {});
+    // TTL: auto-delete simulated sales older than 7 days to keep collection small
+    db.collection('sales').createIndex(
+      { timestamp: 1 },
+      { expireAfterSeconds: 7 * 24 * 3600, partialFilterExpression: { source: 'simulated' } }
+    ).catch(() => {});
     const PORT = process.env.PORT || 4000;
     server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
