@@ -105,6 +105,12 @@ export const analyticsApi = {
   feedback: (data) => api.post('/api/analytics/monitor/feedback', data),
 };
 
+export const scenariosApi = {
+  list:   ()         => api.get('/api/scenarios'),
+  save:   (data)     => api.post('/api/scenarios', data),
+  remove: (id)       => api.delete(`/api/scenarios/${id}`),
+};
+
 export const vizApi = {
   datasetsList:      ()            => api.get('/api/viz/datasets-list'),
   overview:          (dsId)        => api.get('/api/viz/overview',          { params: { dataset_id: dsId } }),

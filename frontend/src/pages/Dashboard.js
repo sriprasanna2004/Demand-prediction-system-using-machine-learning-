@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -333,6 +333,36 @@ export default function Dashboard() {
             })}
           </div>
         </div>
+        {/* Today's Action Card */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardTitle}>Today's Actions</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[
+              lowStock.length > 0 && { priority: 'high', text: `Reorder ${lowStock.length} low-stock products`, link: '/inventory' },
+              demandPct > 10 && { priority: 'medium', text: `Demand up ${demandPct}% - review stock`, link: '/predictions' },
+              demandPct < -10 && { priority: 'medium', text: `Demand down - consider promotions`, link: '/decisions' },
+              { priority: 'low', text: 'Run batch predictions to refresh forecasts', link: '/predictions' },
+            ].filter(Boolean).slice(0, 3).map((action, i) => (
+              <a key={i} href={action.link} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 10,
+                  background: action.priority === 'high' ? 'rgba(239,68,68,0.06)' : 'rgba(255,255,255,0.03)',
+                  border: `1px solid ${action.priority === 'high' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'}`,
+                }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 20, textTransform: 'uppercase',
+                    background: action.priority === 'high' ? 'rgba(239,68,68,0.15)' : 'rgba(99,102,241,0.15)',
+                    color: action.priority === 'high' ? '#f87171' : '#a5b4fc',
+                  }}>{action.priority}</span>
+                  <span style={{ fontSize: 12, color: 'var(--text2)', flex: 1 }}>{action.text}</span>
+                  <span style={{ fontSize: 11, color: 'var(--muted)' }}>-&gt;</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
 
         {/* Live feed */}
         <div className={styles.card}>
@@ -400,3 +430,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

@@ -11,6 +11,9 @@ import Datasets from './pages/Datasets';
 import Analytics from './pages/Analytics';
 import ModelCard from './pages/ModelCard';
 import DataViz from './pages/DataViz';
+import React from 'react';
+const Calendar = React.lazy(() => import('./pages/Calendar'));
+const Settings = React.lazy(() => import('./pages/Settings'));
 import { SocketProvider } from './context/SocketContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import ConnectionBanner from './components/ConnectionBanner';
@@ -33,7 +36,7 @@ const PAGE_TITLES = {
   '/': 'Dashboard', '/predictions': 'Predictions', '/forecast': 'Forecast',
   '/decisions': 'RL Decisions', '/inventory': 'Inventory', '/analytics': 'Analytics',
   '/products': 'Products', '/datasets': 'Datasets', '/model-card': 'Model Card',
-  '/data-viz': 'Data Visualizations',
+  '/data-viz': 'Data Visualizations', '/calendar': 'Demand Calendar', '/settings': 'Settings',
 };
 
 function Topbar() {
@@ -178,6 +181,9 @@ export default function App() {
     </SocketProvider>
   );
 }
+
+
+
 
 
 

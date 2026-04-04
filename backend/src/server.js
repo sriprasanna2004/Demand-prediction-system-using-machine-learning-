@@ -20,6 +20,7 @@ const analyticsRoutes = require('./routes/analytics');
 const vizRoutes = require('./routes/visualizations');
 const authRoutes = require('./routes/auth');
 const alertRoutes = require('./routes/alerts');
+const scenarioRoutes = require('./routes/scenarios');
 const { runSimulation } = require('./services/simulationEngine');
 const { emitDashboardUpdate } = require('./services/socketService');
 const { fetchWeather, fetchMarketTrend } = require('./services/externalApiService');
@@ -52,6 +53,7 @@ app.use(rateLimiter({ max: 200, windowMs: 60000 }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/alerts', alertRoutes);
+app.use('/api/scenarios', scenarioRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/predict', rateLimiter({ max: 60, windowMs: 60000 }), predictRoutes);

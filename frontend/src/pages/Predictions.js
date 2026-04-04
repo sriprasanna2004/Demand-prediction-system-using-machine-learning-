@@ -1,11 +1,12 @@
 ﻿import { useState, useCallback } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { productsApi, predictApi, forecastApi } from "../api/client";
+import { productsApi, predictApi, forecastApi, scenariosApi, analyticsApi } from "../api/client";
 import { useRetrain } from "../hooks/useRetrain";
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import DataQualityBadge from "../components/DataQualityBadge";
+import FeedbackModal from "../components/FeedbackModal";
 import styles from "./Predictions.module.css";
 
 const stockColor = { UNDERSTOCK: "var(--danger)", OVERSTOCK: "var(--warning)", OPTIMAL: "var(--success)" };
@@ -33,7 +34,15 @@ export default function Predictions() {
   const [explanation, setExplanation] = useState(null);
   const [whatIfPrice, setWhatIfPrice] = useState(null);
   const [whatIfResult, setWhatIfResult] = useState(null);
+  const [feedbackRow, setFeedbackRow] = useState(null);
+  const qc = useQueryClient();
   const retrain = useRetrain();
+
+  const saveMutation = useMutation({
+    mutationFn: (data) => scenariosApi.save(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['scenarios'] }); toast.success('Scenario saved'); },
+    onError: e => toast.error(e.message),
+  });
 
   const { data: products } = useQuery({
     queryKey: ["products"],
@@ -175,6 +184,17 @@ export default function Predictions() {
                   <span style={{ color: demandDelta >= 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 700 }}>
                     {demandDelta >= 0 ? '↑' : '↓'} {Math.abs(demandDelta).toFixed(1)} units
                   </span>
+                  <button onClick={() => saveMutation.mutate({
+                    name: `${selectedProduct?.name} @ $${whatIfPrice}`,
+                    productId: form.productId,
+                    productName: selectedProduct?.name,
+                    inputs: { price: whatIfPrice },
+                    result: whatIfResult,
+                  })} style={{
+                    marginLeft: 'auto', padding: '3px 10px', borderRadius: 8,
+                    background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)',
+                    color: '#a5b4fc', fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                  }}>💾 Save</button>
                 </div>
               )}
             </motion.div>
@@ -265,7 +285,7 @@ export default function Predictions() {
         ) : (
           <table className={styles.table}>
             <thead>
-              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th></tr>
+              <tr><th>Product</th><th>Predicted Demand</th><th>90% CI</th><th>Confidence</th><th>Method</th><th>Feedback</th></tr>
             </thead>
             <tbody>
               {batchData?.map((row, i) => (
@@ -286,12 +306,23 @@ export default function Predictions() {
                     </span>
                   </td>
                   <td className={styles.muted}>{row.method || "random_forest"}</td>
+                  <td>
+                    <button onClick={() => setFeedbackRow(row)} style={{
+                      padding: '3px 10px', borderRadius: 8, border: '1px solid rgba(16,185,129,0.3)',
+                      background: 'rgba(16,185,129,0.08)', color: '#6ee7b7',
+                      fontSize: 11, fontWeight: 600, cursor: 'pointer',
+                    }}>+ Actual</button>
+                  </td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+
+      {feedbackRow && (
+        <FeedbackModal prediction={feedbackRow} onClose={() => setFeedbackRow(null)} />
+      )}
     </div>
   );
 }

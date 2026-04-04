@@ -122,6 +122,32 @@ router.get('/', async (req, res) => {
     if (topProds.length > 0)
       insights.push({ type: 'positive', icon: '🏆', title: 'Top Performer', text: `"${topProds[0].name}" leads demand with ${topProds[0].qty} units. Prioritize stock replenishment for this product.` });
 
+    // Week-over-week comparison
+    const last7Total  = salesLast7[0]?.qty || 0;
+    const prev7Start  = new Date(now - 14 * 24 * 60 * 60 * 1000);
+    const prev7End    = new Date(now - 7  * 24 * 60 * 60 * 1000);
+    const prev7Sales  = await Sale.aggregate([
+      { $match: { timestamp: { $gte: prev7Start, $lt: prev7End } } },
+      { $group: { _id: null, qty: { $sum: '$quantity' } } }
+    ]);
+    const prev7Total = prev7Sales[0]?.qty || 0;
+    if (last7Total > 0 && prev7Total > 0) {
+      const wowPct = (((last7Total - prev7Total) / prev7Total) * 100).toFixed(1);
+      if (Math.abs(parseFloat(wowPct)) > 10)
+        insights.push({
+          type: parseFloat(wowPct) > 0 ? 'positive' : 'warning',
+          icon: parseFloat(wowPct) > 0 ? '📊' : '📉',
+          title: 'Week-over-Week',
+          text: `Sales this week are ${wowPct > 0 ? 'up' : 'down'} ${Math.abs(wowPct)}% vs last week (${last7Total} vs ${prev7Total} units).`
+        });
+    }
+
+    // Seasonal spike detection (month-based)
+    const currentMonth = now.getMonth() + 1;
+    const peakMonths = [11, 12, 1]; // Nov, Dec, Jan
+    if (peakMonths.includes(currentMonth))
+      insights.push({ type: 'positive', icon: '🎄', title: 'Peak Season', text: 'You are in peak demand season. Build safety stock now to avoid stockouts during high-demand periods.' });
+
     res.json({
       success: true,
       data: {
