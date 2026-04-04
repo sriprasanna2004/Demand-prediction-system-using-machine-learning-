@@ -156,7 +156,24 @@ export default function Decisions() {
       {/* Batch decisions table */}
       <motion.div className={styles.card} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
         <h2 className={styles.cardTitle}>Fleet Decisions — All Products</h2>
-        {batchLoading ? <p className={styles.muted}>Analyzing all products...</p> : (
+        {batchLoading ? (
+          <div>
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className={styles.skeletonRow}>
+                <div className={styles.skeletonCell} style={{ width: '30%' }} />
+                <div className={styles.skeletonCell} style={{ width: '10%' }} />
+                <div className={styles.skeletonCell} style={{ width: '20%' }} />
+                <div className={styles.skeletonCell} style={{ width: '12%' }} />
+                <div className={styles.skeletonCell} style={{ width: '15%' }} />
+              </div>
+            ))}
+          </div>
+        ) : !batchData?.length ? (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--muted)', fontSize: 13 }}>
+            <div style={{ fontSize: 32, marginBottom: 10 }}>📦</div>
+            No products found. Add products to see fleet decisions.
+          </div>
+        ) : (
           <table className={styles.table}>
             <thead>
               <tr><th>Product</th><th>Stock</th><th>Action</th><th>Reorder Qty</th><th>Confidence</th></tr>

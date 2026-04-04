@@ -6,36 +6,70 @@
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--radius);
   padding: 24px;
+  position: relative; overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
 }
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.3), transparent);
+}
+.card:hover { border-color: rgba(99,102,241,0.18); }
 
 .cardTitle {
-  font-size: 12px; font-weight: 600; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 20px;
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
 }
-
-.form { display: flex; flex-direction: column; gap: 16px; }
-
-.field { display: flex; flex-direction: column; gap: 6px; }
-
-.label { font-size: 12px; color: var(--muted); font-weight: 500; }
+.cardTitle::before {
+  content: '';
+  width: 3px; height: 14px;
+  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  border-radius: 2px; flex-shrink: 0;
+}
 
 .input {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 10px 12px; color: var(--text);
-  font-size: 14px; width: 100%; outline: none;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 11px 14px; color: var(--text);
+  font-size: 13.5px; width: 100%; outline: none; font-family: inherit;
+  transition: border-color .2s, box-shadow .2s;
 }
-.input:focus { border-color: var(--accent); }
+.input:focus {
+  border-color: rgba(99,102,241,0.5);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+}
 
 .btnPrimary {
-  background: var(--accent); color: #fff; border: none;
-  padding: 12px; border-radius: 8px; font-weight: 600; font-size: 14px;
-  margin-top: 4px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff; border: none;
+  padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13.5px;
+  margin-top: 4px; cursor: pointer; transition: all .2s;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.3);
 }
-.btnPrimary:disabled { opacity: 0.5; }
+.btnPrimary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.45);
+}
+.btnPrimary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.metaItem {
+  background: rgba(255,255,255,0.04); border-radius: 12px; padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 4px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.retrainBtn {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text2); padding: 10px 18px; border-radius: 12px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all .2s;
+}
+.retrainBtn:hover { border-color: rgba(99,102,241,0.4); color: #a5b4fc; }
+.retrainBtn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .errorBox {
   margin-top: 12px; padding: 10px 14px;
