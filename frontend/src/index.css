@@ -29,7 +29,7 @@
   --sidebar-w:248px;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; color-scheme: dark; }
 
 body {
   background: #030507;
@@ -145,7 +145,7 @@ body::before {
 /* ── Form elements ── */
 .input, .select {
   width: 100%; padding: 11px 14px; border-radius: 12px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  background: #0d1220; border: 1px solid rgba(255,255,255,0.1);
   color: var(--text); font-size: 13.5px; font-family: inherit;
   transition: border-color .2s, box-shadow .2s; outline: none;
 }
@@ -226,4 +226,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 
 
+
+
+/* ── Force dark dropdown on ALL select elements ── */
+select {
+  color-scheme: dark;
+  background-color: #0d1220 !important;
+  color: #f1f5f9 !important;
+}
+select option {
+  background-color: #0d1220;
+  color: #f1f5f9;
+}
 
