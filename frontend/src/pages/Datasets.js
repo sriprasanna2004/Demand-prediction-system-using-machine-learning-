@@ -124,6 +124,17 @@ export default function Datasets() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['datasets'] }); toast.success('Dataset deleted'); }
   });
 
+  const purgeMutation = useMutation({
+    mutationFn: () => datasetsApi.purgeProducts(),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ['products'] });
+      qc.invalidateQueries({ queryKey: ['insights'] });
+      qc.invalidateQueries({ queryKey: ['batch-predict'] });
+      toast.success(res.message || 'Cleaned up dataset products', { duration: 6000 });
+    },
+    onError: e => toast.error(e.message),
+  });
+
   const mappedCount = Object.values(mappings).filter(Boolean).length;
 
   const handleDrop = (e) => {
@@ -282,13 +293,25 @@ export default function Datasets() {
         <motion.div className={styles.card} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
           <div className={styles.listHeader}>
             <h2 className={styles.cardTitle}>Uploaded Datasets</h2>
-            {datasets?.length > 0 && (
-              <button className={styles.btnTrain}
-                onClick={() => trainMutation.mutate()}
-                disabled={trainMutation.isPending}>
-                {trainMutation.isPending ? `🔄 ${trainStage} (${trainSeconds}s)` : '🚀 Retrain on All Data'}
+            <div style={{ display: 'flex', gap: 8 }}>
+              {datasets?.length > 0 && (
+                <button className={styles.btnTrain}
+                  onClick={() => trainMutation.mutate()}
+                  disabled={trainMutation.isPending}>
+                  {trainMutation.isPending ? `🔄 ${trainStage} (${trainSeconds}s)` : '🚀 Retrain on All Data'}
+                </button>
+              )}
+              <button
+                onClick={() => { if (window.confirm('This will delete all auto-generated products and their sales from dataset imports. Manually added products are kept. Continue?')) purgeMutation.mutate(); }}
+                disabled={purgeMutation.isPending}
+                style={{
+                  padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.3)',
+                  background: 'rgba(239,68,68,0.08)', color: '#f87171',
+                  fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                }}>
+                {purgeMutation.isPending ? 'Cleaning...' : '🗑 Clean Up Products'}
               </button>
-            )}
+            </div>
           </div>
 
           {isLoading ? <p className={styles.muted}>Loading...</p> :

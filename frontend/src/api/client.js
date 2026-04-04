@@ -1,4 +1,4 @@
-// Direct Railway URL — no proxy, no env var dependency
+﻿// Direct Railway URL — no proxy, no env var dependency
 import axios from 'axios';
 
 const RAILWAY = 'https://divine-surprise-production-1666.up.railway.app';
@@ -84,7 +84,8 @@ export const datasetsApi = {
   map: (data) => api.post('/api/datasets/map', data),
   list: () => api.get('/api/datasets'),
   remove: (id) => api.delete(`/api/datasets/${id}`),
-  train: () => axios.create({ baseURL: BASE, timeout: 200000 }).post('/api/datasets/train').then(r => r.data)
+  train: () => axios.create({ baseURL: BASE, timeout: 200000 }).post('/api/datasets/train').then(r => r.data),
+  purgeProducts: () => api.post('/api/datasets/purge-products', { confirm: 'yes' }),
 };
 
 export const analyticsApi = {
@@ -140,3 +141,4 @@ export const vizApi = {
 };
 
 export default api;
+

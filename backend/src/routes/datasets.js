@@ -200,3 +200,37 @@ router.post('/train', async (req, res) => {
 });
 
 module.exports = router;
+
+// POST /api/datasets/purge-products — delete all products created from dataset imports
+// (keeps manually created products by checking for numeric-only names or dataset source sales)
+router.post('/purge-products', async (req, res) => {
+  try {
+    const { confirm } = req.body;
+    if (confirm !== 'yes') return res.status(400).json({ success: false, error: 'Send confirm: yes' });
+
+    // Delete all sales from dataset imports (source: 'api')
+    const salesResult = await Sale.deleteMany({ source: 'api' });
+
+    // Delete products that were auto-created from datasets
+    // Identify them: name is purely numeric OR created alongside api sales
+    const apiProductIds = await Sale.distinct('productId', { source: 'simulated' });
+    // Delete products NOT in the simulated sales set (i.e. only dataset-created ones)
+    // Safer: delete products with numeric names (store numbers like "1", "2", etc.)
+    const numericProducts = await Product.find({ isActive: true }).lean();
+    const toDelete = numericProducts.filter(p => /^\d+$/.test(p.name.trim()));
+    const deleteIds = toDelete.map(p => p._id);
+    let productsDeleted = 0;
+    if (deleteIds.length) {
+      await Product.deleteMany({ _id: { $in: deleteIds } });
+      await Sale.deleteMany({ productId: { $in: deleteIds } });
+      productsDeleted = deleteIds.length;
+    }
+
+    res.json({
+      success: true,
+      message: `Removed ${salesResult.deletedCount} dataset sales and ${productsDeleted} auto-generated products`,
+      salesDeleted: salesResult.deletedCount,
+      productsDeleted,
+    });
+  } catch (err) { res.status(500).json({ success: false, error: err.message }); }
+});
