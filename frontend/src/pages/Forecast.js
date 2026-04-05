@@ -2,7 +2,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { productsApi, forecastApi } from '../api/client';
+import { productsApi, vizApi, forecastApi } from '../api/client';
 import ForecastChart from '../components/ForecastChart';
 import styles from './Forecast.module.css';
 
@@ -34,10 +34,7 @@ export default function Forecast() {
   const [compareData, setCompareData] = useState(null);
   const [explanation, setExplanation] = useState(null);
 
-  const { data: products } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => productsApi.getAll().then(r => r.data)
-  });
+  const { products, activeDataset } = useDatasetProducts();
 
   const forecastMutation = useMutation({
     mutationFn: () => forecastApi.getForecast(productId, horizon),
@@ -211,4 +208,6 @@ export default function Forecast() {
     </div>
   );
 }
+
+
 

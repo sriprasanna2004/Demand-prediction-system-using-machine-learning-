@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Line, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Legend } from 'chart.js';
-import { productsApi, analyticsApi } from '../api/client';
+import { productsApi, vizApi, analyticsApi } from '../api/client';
 import styles from './Analytics.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Legend);
@@ -36,7 +36,7 @@ export default function Analytics() {
   const [tab, setTab] = useState('Decomposition');
   const [productId, setProductId] = useState('');
 
-  const { data: products } = useQuery({ queryKey: ['products'], queryFn: () => productsApi.getAll().then(r => r.data) });
+  const { products, activeDataset } = useDatasetProducts();
   const selectedProduct = products?.find(p => p._id === productId);
 
   const decompQuery = useQuery({
@@ -333,4 +333,6 @@ export default function Analytics() {
     </div>
   );
 }
+
+
 

@@ -2,7 +2,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { productsApi, predictApi, forecastApi, scenariosApi, analyticsApi } from "../api/client";
+import { productsApi, vizApi, predictApi, forecastApi, scenariosApi, analyticsApi } from "../api/client";
+import { useDatasetProducts } from '../hooks/useDatasetProducts';
 import { useRetrain } from "../hooks/useRetrain";
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import DataQualityBadge from "../components/DataQualityBadge";
@@ -44,10 +45,7 @@ export default function Predictions() {
     onError: e => toast.error(e.message),
   });
 
-  const { data: products } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => productsApi.getAll().then(r => r.data)
-  });
+  const { products, activeDataset } = useDatasetProducts();
 
   const { data: batchData, isLoading: batchLoading } = useQuery({
     queryKey: ["batch-predict"],
@@ -326,5 +324,8 @@ export default function Predictions() {
     </div>
   );
 }
+
+
+
 
 

@@ -2,7 +2,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { productsApi, rlApi } from '../api/client';
+import { productsApi, vizApi, rlApi } from '../api/client';
 import styles from './Decisions.module.css';
 
 const SCENARIOS = [
@@ -26,10 +26,7 @@ export default function Decisions() {
   const [scenarioResult, setScenarioResult] = useState(null);
   const [activeScenario, setActiveScenario] = useState(null);
 
-  const { data: products } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => productsApi.getAll().then(r => r.data)
-  });
+  const { products, activeDataset } = useDatasetProducts();
 
   const { data: batchData, isLoading: batchLoading } = useQuery({
     queryKey: ['rl-batch'],
@@ -203,4 +200,6 @@ export default function Decisions() {
     </div>
   );
 }
+
+
 
