@@ -12,10 +12,21 @@ const productSchema = {
 // GET all products
 router.get('/', async (req, res) => {
   try {
-    const { category, search } = req.query;
+    const { category, search, dataset_id } = req.query;
     const filter = { isActive: true };
     if (category) filter.category = category;
     if (search) filter.$text = { $search: search };
+
+    // If dataset_id provided, only return products from that dataset
+    if (dataset_id) {
+      const Sale = require('../models/Sale');
+      const productIds = await Sale.distinct('productId', {
+        source: 'api',
+        'metadata.dataset_id': dataset_id
+      });
+      filter._id = { $in: productIds };
+    }
+
     const products = await Product.find(filter).sort({ createdAt: -1 });
     res.json({ success: true, data: products });
   } catch (err) {

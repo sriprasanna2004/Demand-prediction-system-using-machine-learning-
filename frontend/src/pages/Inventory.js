@@ -1,17 +1,27 @@
 ﻿import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { productsApi, predictApi, analyticsApi } from '../api/client';
+import { productsApi, predictApi, analyticsApi, vizApi } from '../api/client';
 import styles from './Inventory.module.css';
 
 export default function Inventory() {
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('status'); // status | stock | demand | risk
+  const [sortBy, setSortBy] = useState('status');
   const [filterStatus, setFilterStatus] = useState('');
 
+  // Detect active dataset (same as Dashboard)
+  const { data: dsList } = useQuery({
+    queryKey: ['viz-datasets-list'],
+    queryFn: () => vizApi.datasetsList().then(r => r.data),
+    staleTime: 30000,
+  });
+  const activeDataset = dsList?.[0];
+  const dsId = activeDataset?.dataset_id;
+
   const { data: products, isLoading } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => productsApi.getAll().then(r => r.data)
+    queryKey: ['products', dsId],
+    queryFn: () => productsApi.getAll(dsId ? { dataset_id: dsId } : {}).then(r => r.data),
+    staleTime: 0,
   });
   const { data: batchPredictions } = useQuery({
     queryKey: ['batch-predict'],
@@ -73,6 +83,24 @@ export default function Inventory() {
         <h1 className={styles.title}>Inventory Optimization</h1>
         <p className={styles.subtitle}>AI-driven stock recommendations based on predicted demand</p>
       </motion.div>
+
+      {/* Dataset source indicator */}
+      {activeDataset && (
+        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '10px 16px', borderRadius: 12,
+            background: 'rgba(194,65,12,0.07)', border: '1px solid rgba(194,65,12,0.2)',
+            fontSize: 12.5,
+          }}>
+          <span style={{ color: '#fb923c', fontWeight: 600 }}>
+            Showing products from: <strong>{activeDataset.filename}</strong>
+          </span>
+          <span style={{ color: 'var(--muted)', marginLeft: 4 }}>
+            ({products?.length || 0} products)
+          </span>
+        </motion.div>
+      )}
 
       <div className={styles.alertRow}>
         <div className={styles.alertCard} data-type="danger">
