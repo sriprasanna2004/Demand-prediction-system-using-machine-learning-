@@ -118,7 +118,7 @@ cron.schedule('*/15 * * * *', async () => {
   }
 });
 
-// Keep ML service warm — ping every 5 minutes to prevent Railway cold start
+// Keep ML service warm — ping every 5 minutes to prevent cold start
 cron.schedule('*/5 * * * *', async () => {
   try {
     const axios = require('axios');
@@ -126,6 +126,15 @@ cron.schedule('*/5 * * * *', async () => {
     const res = await axios.get(`${ML_URL}/health`, { timeout: 8000 });
     if (res.data?.status !== 'ok') console.warn('ML service health check failed:', res.data);
   } catch (_) { /* silent — just a keep-alive */ }
+});
+
+// Self keep-alive — prevents Render free tier from sleeping
+cron.schedule('*/10 * * * *', async () => {
+  try {
+    const axios = require('axios');
+    const SELF = process.env.RENDER_EXTERNAL_URL || `http://localhost:${process.env.PORT || 4000}`;
+    await axios.get(`${SELF}/health`, { timeout: 5000 });
+  } catch (_) { /* silent */ }
 });
 
 // Nightly ML model retrain at 2:00 AM

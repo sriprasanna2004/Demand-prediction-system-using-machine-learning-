@@ -6,7 +6,7 @@ const SocketContext = createContext(null);
 // Socket.io needs the actual backend URL (can't use relative)
 const SOCKET_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://localhost:4000'
-  : 'https://divine-surprise-production-1666.up.railway.app';
+  : (process.env.REACT_APP_API_URL || 'https://divine-surprise-production-1666.up.railway.app');
 
 export function SocketProvider({ children }) {
   const socketRef = useRef(null);

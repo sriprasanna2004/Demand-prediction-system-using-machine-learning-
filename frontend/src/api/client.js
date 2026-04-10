@@ -1,10 +1,11 @@
-﻿// Direct Railway URL — no proxy, no env var dependency
+﻿// Direct URL — supports Railway, Render, or local
 import axios from 'axios';
 
 const RAILWAY = 'https://divine-surprise-production-1666.up.railway.app';
+const RENDER  = process.env.REACT_APP_API_URL || '';
 const BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://localhost:4000'
-  : RAILWAY;
+  : (RENDER || RAILWAY);
 
 const api = axios.create({ baseURL: BASE, timeout: 60000 });
 

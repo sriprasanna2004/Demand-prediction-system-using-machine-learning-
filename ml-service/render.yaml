@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: demandai-ml
+    runtime: docker
+    rootDir: ml-service
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: MODEL_PATH
+        value: ./models/demand_model.joblib
+      - key: ENSEMBLE_PATH
+        value: ./models/ensemble_model.joblib
+      - key: CONFORMAL_PATH
+        value: ./models/conformal_model.joblib
+      - key: CLUSTER_PATH
+        value: ./models/cluster_models.joblib
+      - key: PPO_SB3_PATH
+        value: ./models/ppo_sb3.zip
+      - key: LEAD_TIME_MODEL_PATH
+        value: ./models/lead_time_model.joblib
