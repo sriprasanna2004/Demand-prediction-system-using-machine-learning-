@@ -2,11 +2,10 @@ services:
   - type: web
     name: demandai-ml
     runtime: docker
-    rootDir: ml-service
     dockerfilePath: ./Dockerfile
     envVars:
       - key: PORT
-        value: 5000
+        value: 5001
       - key: MONGO_URI
         sync: false
       - key: ALLOWED_ORIGINS
