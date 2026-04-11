@@ -22,8 +22,8 @@ const TT = {
 };
 
 const KPI_CONFIG = [
-  { key: 'sales',   label: 'Units Sold',    icon: 'BOX', color: '#6366f1' },
-  { key: 'revenue', label: 'Revenue',       icon: '\, color: '#10b981' },
+  { key: 'sales',   label: 'Units Sold',    icon: 'QTY', color: '#6366f1' },
+  { key: 'revenue', label: 'Revenue',       icon: 'REV', color: '#10b981' },
   { key: 'alerts',  label: 'Stock Alerts',  icon: 'ALT', color: '#f59e0b' },
   { key: 'trend',   label: 'Demand Trend',  icon: 'TRD', color: '#8b5cf6' },
 ];
