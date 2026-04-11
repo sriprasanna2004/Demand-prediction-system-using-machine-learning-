@@ -2,8 +2,8 @@
   "name": "demandai-root",
   "version": "1.0.0",
   "scripts": {
-    "start": "node backend/src/server.js",
-    "build": "cd backend && npm install"
+    "start": "node \"ai demand/ai demand/backend/src/server.js\"",
+    "build": "cd \"ai demand/ai demand/backend\" && npm install"
   },
   "engines": {
     "node": ">=18.0.0"
