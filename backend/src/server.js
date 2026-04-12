@@ -34,16 +34,40 @@ const server = http.createServer(app);
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
-  : ['http://localhost:3000'];
+  : ['http://localhost:3000', 'http://localhost:3001'];
+
+// Always allow Vercel frontend
+const ALL_ORIGINS = [
+  ...ALLOWED_ORIGINS,
+  'https://demand-prediction-system-using-mach.vercel.app',
+];
+
+const corsOptions = {
+  origin: (origin, cb) => {
+    // Allow requests with no origin (mobile apps, curl, server-to-server)
+    if (!origin) return cb(null, true);
+    if (ALL_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) {
+      return cb(null, true);
+    }
+    cb(new Error(`CORS blocked: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 const io = new Server(server, {
-  cors: { origin: ALLOWED_ORIGINS, methods: ['GET', 'POST'] }
+  cors: { origin: (origin, cb) => {
+    if (!origin || ALL_ORIGINS.includes(origin) || origin.endsWith('.vercel.app')) return cb(null, true);
+    cb(new Error(`CORS blocked: ${origin}`));
+  }, methods: ['GET', 'POST'], credentials: true }
 });
 
 // Make io accessible in routes
 app.set('io', io);
 
-app.use(cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(compression()); // gzip all responses
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
