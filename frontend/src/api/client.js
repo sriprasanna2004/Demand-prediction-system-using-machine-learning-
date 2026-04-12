@@ -1,7 +1,7 @@
 ﻿// Direct URL — supports Railway, Render, or local
 import axios from 'axios';
 
-const RAILWAY = 'https://divine-surprise-production-1666.up.railway.app';
+const RAILWAY = 'https://demand-prediction-system-using-machine-learning-production-6e9f.up.railway.app';
 const RENDER  = process.env.REACT_APP_API_URL || '';
 const BASE = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://localhost:4000'
