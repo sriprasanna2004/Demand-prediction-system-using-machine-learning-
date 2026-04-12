@@ -2,7 +2,6 @@ services:
   - type: web
     name: demandai-backend
     runtime: node
-    rootDir: backend
     buildCommand: npm install
     startCommand: npm start
     envVars:
