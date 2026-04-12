@@ -3,6 +3,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { productsApi, vizApi, forecastApi } from '../api/client';
+import { useDatasetProducts } from '../hooks/useDatasetProducts';
 import ForecastChart from '../components/ForecastChart';
 import styles from './Forecast.module.css';
 

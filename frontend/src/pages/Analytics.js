@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Line, Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Legend } from 'chart.js';
 import { productsApi, vizApi, analyticsApi } from '../api/client';
+import { useDatasetProducts } from '../hooks/useDatasetProducts';
 import styles from './Analytics.module.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, Tooltip, Legend);
