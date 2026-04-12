@@ -93,6 +93,43 @@ app.use('/api/datasets', datasetRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/viz', vizRoutes);
 
+// One-time seed endpoint — seeds products + 90d sales into Atlas
+app.get('/seed', async (req, res) => {
+  if (req.query.key !== 'demandai2024') return res.status(403).json({ error: 'forbidden' });
+  try {
+    const Product = require('./models/Product');
+    const Sale = require('./models/Sale');
+    const PRODUCTS = [
+      { name: 'iPhone 15 Pro',      category: 'Electronics', price: 999,  stock: 80  },
+      { name: 'Samsung 4K TV',      category: 'Electronics', price: 799,  stock: 30  },
+      { name: 'Nike Air Max',       category: 'Clothing',    price: 120,  stock: 150 },
+      { name: "Levi's Jeans",       category: 'Clothing',    price: 60,   stock: 200 },
+      { name: 'Organic Coffee 1kg', category: 'Food',        price: 18,   stock: 500 },
+      { name: 'Protein Bars (12pk)',category: 'Food',        price: 25,   stock: 300 },
+      { name: 'IKEA Desk',          category: 'Furniture',   price: 250,  stock: 40  },
+      { name: 'Office Chair',       category: 'Furniture',   price: 350,  stock: 25  },
+      { name: 'Clean Code (Book)',  category: 'Books',       price: 35,   stock: 100 },
+      { name: 'LEGO Technic Set',   category: 'Toys',        price: 89,   stock: 60  },
+    ];
+    await Product.deleteMany({ source: { $exists: false } });
+    const products = await Product.insertMany(PRODUCTS);
+    const sales = [];
+    const now = Date.now();
+    for (let day = 90; day >= 0; day--) {
+      const ts = new Date(now - day * 86400000);
+      for (const p of products) {
+        const base = { Electronics:2, Clothing:8, Food:20, Furniture:1, Books:5, Toys:4 }[p.category] || 3;
+        const qty = Math.max(1, Math.round(base * (0.5 + Math.random()) * (1 + 0.3 * Math.sin(day/7))));
+        sales.push({ productId: p._id, quantity: qty, price: p.price, source: 'simulated', timestamp: ts });
+      }
+    }
+    await Sale.insertMany(sales);
+    res.json({ ok: true, products: products.length, sales: sales.length });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.get('/health', async (_, res) => {
   const dbState = mongoose.connection.readyState;
   const ML_URL = process.env.ML_SERVICE_URL || 'https://demand-prediction-system-using-machine-learning-production.up.railway.app';
